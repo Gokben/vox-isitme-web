@@ -19,6 +19,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 $baseUrl = rtrim(Theme::siteUrl(), '/');
 $homeUrl = $baseUrl . '/';
 $aboutUrl = $baseUrl . '/hakkimizda';
+$blogUrl = $baseUrl . '/blog';
 $appointmentUrl = $baseUrl . '/randevu';
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
@@ -133,6 +134,8 @@ if ($WHERE_AM_I === 'page') {
     $slug = method_exists($page, 'slug') ? $page->slug() : '';
     if ($slug === 'randevu') {
         include THEME_DIR_PHP . 'appointment.php';
+    } elseif ($slug === 'blog') {
+        include THEME_DIR_PHP . 'blog.php';
     } else {
         include THEME_DIR_PHP . 'page.php';
     }

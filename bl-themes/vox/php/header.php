@@ -1,6 +1,6 @@
 <?php
 $viewSlug = ($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '';
-$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : 'is-inner');
+$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : 'is-inner'));
 ?>
 <!doctype html>
 <html lang="<?php echo Theme::lang(); ?>">
@@ -37,7 +37,7 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
             <a href="<?php echo $homeUrl; ?>">Ana Sayfa</a>
             <a href="<?php echo $aboutUrl; ?>">Hakkımızda</a>
             <a href="<?php echo $homeUrl; ?>#galeri">Galeri</a>
-            <a href="<?php echo $homeUrl; ?>#blog">Blog</a>
+            <a href="<?php echo $blogUrl; ?>">Blog</a>
             <a href="<?php echo $homeUrl; ?>#iletisim">İletişim</a>
         </nav>
         <a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a>
