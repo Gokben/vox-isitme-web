@@ -1,5 +1,5 @@
 <?php
-$viewSlug = ($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '';
+$viewSlug = !empty($isBlogRoute) ? 'blog' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '');
 $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : 'is-inner'));
 ?>
 <!doctype html>
@@ -8,8 +8,13 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#064b2b">
+    <?php if (!empty($isBlogRoute)): ?>
+    <title>Blog Yazıları | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="İşitme sağlığı, cihaz teknolojileri ve günlük yaşam için Vox İşitme uzmanlarından yararlı bilgiler.">
+    <?php else: ?>
     <?php echo Theme::metaTagTitle(); ?>
     <?php echo Theme::metaTagDescription(); ?>
+    <?php endif; ?>
     <?php echo Theme::favicon('img/brand-mark.png'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

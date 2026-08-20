@@ -21,6 +21,9 @@ $homeUrl = $baseUrl . '/';
 $aboutUrl = $baseUrl . '/hakkimizda';
 $blogUrl = $baseUrl . '/blog';
 $appointmentUrl = $baseUrl . '/randevu';
+$requestPath = rtrim((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/'), '/');
+$blogPath = rtrim((string)(parse_url($blogUrl, PHP_URL_PATH) ?: '/blog'), '/');
+$isBlogRoute = $requestPath === $blogPath;
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
 
@@ -130,12 +133,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_appointment'])) {
 
 include THEME_DIR_PHP . 'header.php';
 
-if ($WHERE_AM_I === 'page') {
+if ($isBlogRoute) {
+    include THEME_DIR_PHP . 'blog.php';
+} elseif ($WHERE_AM_I === 'page') {
     $slug = method_exists($page, 'slug') ? $page->slug() : '';
     if ($slug === 'randevu') {
         include THEME_DIR_PHP . 'appointment.php';
-    } elseif ($slug === 'blog') {
-        include THEME_DIR_PHP . 'blog.php';
     } else {
         include THEME_DIR_PHP . 'page.php';
     }
