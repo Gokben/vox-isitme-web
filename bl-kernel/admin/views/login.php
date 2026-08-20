@@ -2,7 +2,7 @@
 
 echo '
 <div class="login-logo" aria-label="Vox İşitme">
-	<span class="vox-login-wordmark"><b>V</b><img src="' . HTML_PATH_ROOT . 'bl-themes/vox/img/favicon-transparent.png" alt=""><b>X</b></span>
+	<span class="vox-login-wordmark"><b>V</b><img src="' . HTML_PATH_ROOT . 'bl-themes/vox/img/brand-mark.png?v=' . filemtime(THEME_DIR_IMG . 'brand-mark.png') . '" alt=""><b>X</b></span>
 </div>
 ';
 

@@ -3,7 +3,7 @@
     <div class="container footer-grid">
         <div>
             <a class="brand site-brand footer-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
-                <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>favicon-transparent.png" alt="">X</span>
+                <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>brand-mark.png?v=<?php echo filemtime(THEME_DIR_IMG . 'brand-mark.png'); ?>" alt="">X</span>
                 <span class="brand-label">İŞİTME CİHAZLARI</span>
             </a>
             <p>Daha iyi duymanız ve hayata daha yakından katılmanız için yanınızdayız.</p>

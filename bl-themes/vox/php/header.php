@@ -10,7 +10,7 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
     <meta name="theme-color" content="#064b2b">
     <?php echo Theme::metaTagTitle(); ?>
     <?php echo Theme::metaTagDescription(); ?>
-    <?php echo Theme::favicon('img/favicon-transparent.png'); ?>
+    <?php echo Theme::favicon('img/brand-mark.png'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
 <header class="site-header">
     <div class="container nav">
         <a class="brand site-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
-            <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>favicon-transparent.png" alt="">X</span>
+            <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>brand-mark.png?v=<?php echo filemtime(THEME_DIR_IMG . 'brand-mark.png'); ?>" alt="">X</span>
             <span class="brand-label">İŞİTME CİHAZLARI</span>
         </a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><b class="sr-only">Menüyü aç</b></button>
