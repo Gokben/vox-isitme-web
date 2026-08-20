@@ -2,7 +2,10 @@
 <ul class="nav flex-column pt-4">
 
 	<li class="nav-item mb-4">
-		<img src="<?php echo HTML_PATH_CORE_IMG ?>vox-logo.svg?v=<?php echo filemtime(PATH_KERNEL.'img'.DS.'vox-logo.svg') ?>" width="132" height="64" alt="Vox İşitme Cihazları">
+		<a class="vox-admin-brand" href="<?php echo HTML_PATH_ADMIN_ROOT.'dashboard' ?>" aria-label="Vox İşitme yönetim ana sayfası">
+			<span class="vox-admin-brand-mark">V<img src="<?php echo HTML_PATH_ROOT ?>bl-themes/vox/img/favicon-transparent.png" alt="">X</span>
+			<span class="vox-admin-brand-label">İŞİTME CİHAZLARI</span>
+		</a>
 	</li>
 
 	<li class="nav-item">

@@ -28,7 +28,7 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
 </div>
 <header class="site-header">
     <div class="container nav">
-        <a class="brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
+        <a class="brand site-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
             <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>favicon-transparent.png" alt="">X</span>
             <span class="brand-label">İŞİTME CİHAZLARI</span>
         </a>

@@ -11,6 +11,10 @@
   <link rel="icon" type="image/png" sizes="64x64" href="<?php echo HTML_PATH_CORE_IMG . 'favicon.png?v=' . filemtime(PATH_KERNEL . 'img' . DS . 'favicon.png') ?>">
 
   <!-- CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700;800&family=Manrope:wght@800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?php echo DOMAIN_ADMIN_THEME_CSS . 'vox-brand.css?v=' . filemtime(PATH_ADMIN_THEMES . 'booty' . DS . 'css' . DS . 'vox-brand.css') ?>">
   <?php
   echo Theme::cssBootstrap();
   echo Theme::css(array(
@@ -57,14 +61,6 @@
     .login-logo {
       text-align: center;
       margin-bottom: 30px;
-    }
-
-    .vox-login-logo {
-      display: block;
-      width: 220px;
-      max-width: 100%;
-      height: auto;
-      margin: 0 auto;
     }
 
     .login-logo .logo-icon {

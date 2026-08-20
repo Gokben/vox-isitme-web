@@ -1,0 +1,35 @@
+.vox-admin-brand {
+  display: inline-block;
+  padding: 14px 18px;
+  color: #fff;
+  background: #064b2b;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.vox-admin-brand:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.vox-admin-brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font: 800 34px/30px Manrope, sans-serif;
+  letter-spacing: -3px;
+}
+
+.vox-admin-brand-mark img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.vox-admin-brand-label {
+  display: block;
+  margin-top: 5px;
+  font: 800 10px/1 "DM Sans", sans-serif;
+  letter-spacing: .35px;
+}

@@ -2,7 +2,7 @@
 <footer id="iletisim">
     <div class="container footer-grid">
         <div>
-            <a class="brand footer-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
+            <a class="brand site-brand footer-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">
                 <span class="brand-mark">V<img src="<?php echo DOMAIN_THEME_IMG; ?>favicon-transparent.png" alt="">X</span>
                 <span class="brand-label">İŞİTME CİHAZLARI</span>
             </a>

@@ -2,7 +2,10 @@
 
 echo '
 <div class="login-logo">
-	<img class="vox-login-logo" src="' . HTML_PATH_CORE_IMG . 'vox-logo.svg?v=' . filemtime(PATH_KERNEL . 'img' . DS . 'vox-logo.svg') . '" alt="Vox İşitme Cihazları">
+	<div class="vox-admin-brand" aria-label="Vox İşitme Cihazları">
+		<span class="vox-admin-brand-mark">V<img src="' . HTML_PATH_ROOT . 'bl-themes/vox/img/favicon-transparent.png" alt="">X</span>
+		<span class="vox-admin-brand-label">İŞİTME CİHAZLARI</span>
+	</div>
 </div>
 ';
 
