@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html/voxweb/
+    - /usr/bin/test "$DEPLOYPATH" = "$HOME/public_html/voxweb/"
+    - /bin/rm -rf "$DEPLOYPATH"
+    - /bin/mkdir -p "$DEPLOYPATH"
+    - /bin/cp -R bl-content bl-kernel bl-languages bl-plugins bl-themes "$DEPLOYPATH"
+    - /bin/cp .htaccess index.php install.php BLUDIT-LICENSE README.md "$DEPLOYPATH"
