@@ -1,6 +1,9 @@
 <?php
 $viewSlug = !empty($isBlogRoute) ? 'blog' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '');
 $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : 'is-inner'));
+if (!empty($voxAdminLoggedIn)) {
+    $bodyClass .= ' has-vox-edit-bar';
+}
 ?>
 <!doctype html>
 <html lang="<?php echo Theme::lang(); ?>">
@@ -24,6 +27,31 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
 </head>
 <body class="<?php echo $bodyClass; ?>">
 <?php Theme::plugins('siteBodyBegin'); ?>
+<?php if (!empty($voxAdminLoggedIn)): ?>
+<aside class="vox-edit-bar" aria-label="Yönetici düzenleme araçları">
+    <div class="container vox-edit-bar-inner">
+        <span class="vox-edit-status"><b>VOX</b> Düzenleme modu</span>
+        <nav aria-label="Hızlı düzenleme">
+            <a class="vox-edit-primary" href="<?php echo htmlspecialchars($voxAdminEditUrl, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($voxAdminEditLabel, ENT_QUOTES, 'UTF-8'); ?></a>
+            <button class="vox-add-block-button" type="button" data-vox-block-open>+ Blok ekle</button>
+            <a href="<?php echo DOMAIN_ADMIN; ?>content">Tüm sayfalar</a>
+            <a href="<?php echo DOMAIN_ADMIN; ?>dashboard">Yönetim paneli</a>
+        </nav>
+    </div>
+</aside>
+<dialog class="vox-block-dialog" data-vox-block-dialog data-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-blocks" data-page-key="<?php echo htmlspecialchars($voxBlockPageKey, ENT_QUOTES, 'UTF-8'); ?>" data-token="<?php echo htmlspecialchars((string)$security->getTokenCSRF(), ENT_QUOTES, 'UTF-8'); ?>">
+    <form method="dialog" class="vox-block-form" data-vox-block-form>
+        <div class="vox-block-dialog-head"><div><span>Sayfa oluşturucu</span><h2>Yeni blok ekle</h2></div><button type="button" aria-label="Kapat" data-vox-block-close>×</button></div>
+        <label>Blok türü<select name="blockType" data-vox-block-type><option value="heading">Başlık</option><option value="text">Metin</option><option value="image">Görsel</option><option value="cta">Çağrı / buton alanı</option></select></label>
+        <label data-field="title">Başlık<input name="title" type="text" maxlength="160" placeholder="Blok başlığı"></label>
+        <label data-field="text">Metin<textarea name="text" rows="5" maxlength="3000" placeholder="İçeriğinizi yazın"></textarea></label>
+        <label data-field="image">Görsel adresi<input name="imageUrl" type="url" maxlength="1000" placeholder="https://..."></label>
+        <div class="vox-block-fields-row" data-field="button"><label>Buton yazısı<input name="buttonLabel" type="text" maxlength="80" placeholder="Detaylı bilgi"></label><label>Buton bağlantısı<input name="buttonUrl" type="text" maxlength="1000" placeholder="/randevu"></label></div>
+        <p class="vox-block-form-status" data-vox-block-status aria-live="polite"></p>
+        <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-block-close>Vazgeç</button><button type="submit" class="vox-block-save">Bloğu ekle</button></div>
+    </form>
+</dialog>
+<?php endif; ?>
 <a class="skip-link" href="#main-content">İçeriğe geç</a>
 <div class="topbar">
     <div class="container topbar-inner">

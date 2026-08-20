@@ -4,17 +4,8 @@ declare(strict_types=1);
 
 defined('BLUDIT') || die('Bludit CMS.');
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_name('VOX-APPOINTMENT');
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ]);
-    session_start();
-}
+$voxLogin = new Login();
+$voxAdminLoggedIn = $voxLogin->isLogged();
 
 $baseUrl = rtrim(Theme::siteUrl(), '/');
 $homeUrl = $baseUrl . '/';
@@ -24,6 +15,28 @@ $appointmentUrl = $baseUrl . '/randevu';
 $requestPath = rtrim((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/'), '/');
 $blogPath = rtrim((string)(parse_url($blogUrl, PHP_URL_PATH) ?: '/blog'), '/');
 $isBlogRoute = $requestPath === $blogPath;
+$voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
+$voxAdminEditLabel = 'Ana sayfayı düzenle';
+$voxBlockPageKey = 'home';
+
+if ($isBlogRoute) {
+    $voxAdminEditUrl = DOMAIN_ADMIN . 'content';
+    $voxAdminEditLabel = 'Blog içeriklerini yönet';
+    $voxBlockPageKey = 'blog';
+} elseif ($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'key')) {
+    $voxAdminEditUrl = DOMAIN_ADMIN . 'edit-content/' . rawurlencode((string)$page->key());
+    $voxAdminEditLabel = 'Bu sayfayı düzenle';
+    $voxBlockPageKey = (string)$page->key();
+}
+
+$voxBlocks = [];
+$voxBlocksFile = PATH_DATABASES . 'vox-blocks.json';
+if (is_file($voxBlocksFile)) {
+    $voxBlocksDatabase = json_decode((string)file_get_contents($voxBlocksFile), true);
+    if (is_array($voxBlocksDatabase) && isset($voxBlocksDatabase[$voxBlockPageKey]) && is_array($voxBlocksDatabase[$voxBlockPageKey])) {
+        $voxBlocks = $voxBlocksDatabase[$voxBlockPageKey];
+    }
+}
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
 
@@ -146,4 +159,5 @@ if ($isBlogRoute) {
     include THEME_DIR_PHP . 'home.php';
 }
 
+include THEME_DIR_PHP . 'blocks.php';
 include THEME_DIR_PHP . 'footer.php';

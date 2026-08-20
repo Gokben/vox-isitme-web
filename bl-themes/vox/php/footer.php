@@ -22,6 +22,7 @@
     <div class="container copyright"><span>© <?php echo date('Y'); ?> Vox İşitme Merkezi. Tüm hakları saklıdır.</span><span>Gizlilik Politikası · Kullanım Koşulları</span></div>
 </footer>
 <?php echo Theme::js('js/site.js'); ?>
+<?php if (!empty($voxAdminLoggedIn)): ?><script src="<?php echo DOMAIN_THEME; ?>js/blocks.js?v=<?php echo filemtime(THEME_DIR_JS . 'blocks.js'); ?>"></script><?php endif; ?>
 <?php Theme::plugins('siteBodyEnd'); ?>
 </body>
 </html>
