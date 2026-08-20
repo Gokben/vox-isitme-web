@@ -275,7 +275,7 @@ function install($adminPassword, $timezone)
 		'hakkimizda' => array(
 			'title' => 'Hakkımızda',
 			'description' => 'Vox İşitme Merkezi hakkında bilgi edinin.',
-			'content' => '<p>İşitme sağlığı, hayat kalitesini doğrudan etkileyen en önemli faktörlerden biridir. Vox İşitme Merkezi olarak herkesin daha iyi duymasını sağlamak ve işitme kaybı yaşayan bireylerin hayatlarını kolaylaştırmak için çalışıyoruz.</p><p>Gelişmiş işitme teknolojilerini, deneyimli uzmanlarımızın samimi danışmanlığıyla bir araya getiriyor; her danışanımıza kişiye özel çözümler sunuyoruz.</p>',
+			'content' => '<p>İşitme sağlığı, hayat kalitesini doğrudan etkileyen en önemli faktörlerden biridir. Vox İşitme Merkezi olarak, herkesin daha iyi duymasını sağlamak ve işitme kaybı yaşayan bireylerin hayatlarını kolaylaştırmak için yola çıktık.</p><p>Gelişmiş teknolojilere sahip işitme cihazları, alanında uzman ekibimiz ve müşteri odaklı hizmet anlayışımızla, her yaştan bireye en iyi işitme çözümlerini sunmayı hedefliyoruz. Deneyimli işitme uzmanlarımız, her bireyin işitme kaybını özel olarak değerlendirir ve kişiye özel çözümler sunar.</p>',
 			'position' => 1,
 		),
 		'randevu' => array(
@@ -379,8 +379,8 @@ function install($adminPassword, $timezone)
 	}
 	$data = array(
 		'title' => 'Vox İşitme',
-		'slogan' => 'Daha İyi Duy, Daha İyi Yaşa',
-		'description' => 'İşitme testinden size en uygun cihazın seçimine kadar güvenilir ve kişisel çözümler.',
+		'slogan' => 'Sevdiklerinizin kahkasını, doğanın seslerini ve hayatın tüm güzelliklerini yeniden duymaya hazır olun.',
+		'description' => 'İşitme testinden size en uygun cihazın seçimine kadar, uzman ekibimiz her adımda güvenilir ve kişisel çözümler sunar.',
 		'footer' => 'Copyright © ' . Date::current('Y') . ' Vox İşitme Merkezi',
 		'itemsPerPage' => 6,
 		'language' => $L->currentLanguage(),

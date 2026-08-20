@@ -1,3 +1,7 @@
+<?php
+$viewSlug = ($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '';
+$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : 'is-inner');
+?>
 <!doctype html>
 <html lang="<?php echo Theme::lang(); ?>">
 <head>
@@ -14,13 +18,13 @@
     <?php echo Theme::css('css/style.css'); ?>
     <?php Theme::plugins('siteHead'); ?>
 </head>
-<body>
+<body class="<?php echo $bodyClass; ?>">
 <?php Theme::plugins('siteBodyBegin'); ?>
 <a class="skip-link" href="#main-content">İçeriğe geç</a>
 <div class="topbar">
     <div class="container topbar-inner">
-        <div class="topbar-group"><span>◷ Pazartesi–Cumartesi: 09:00–18:00</span><a href="tel:+905011438043">☎ +90 501 143 80 43</a></div>
-        <div class="topbar-group"><a href="mailto:bilgi@voxisitme.com">✉ bilgi@voxisitme.com</a><span>İstanbul</span></div>
+        <div class="topbar-group"><span>◷ Pazartesi–Cumartesi: 09:00–18:00</span><a href="tel:+905011438043">☎ Sefaköy: +90 501 143 80 43</a></div>
+        <div class="topbar-group"><a href="mailto:bilgi@voxisitme.com">✉ bilgi@voxisitme.com</a><span>TR / EN</span></div>
     </div>
 </div>
 <header class="site-header">
@@ -33,7 +37,8 @@
         <nav id="main-navigation" class="main-nav" aria-label="Ana menü">
             <a href="<?php echo $homeUrl; ?>">Ana Sayfa</a>
             <a href="<?php echo $aboutUrl; ?>">Hakkımızda</a>
-            <a href="<?php echo $homeUrl; ?>#hizmetler">Hizmetler</a>
+            <a href="<?php echo $homeUrl; ?>#galeri">Galeri</a>
+            <a href="<?php echo $homeUrl; ?>#blog">Blog</a>
             <a href="<?php echo $homeUrl; ?>#iletisim">İletişim</a>
         </nav>
         <a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a>
