@@ -2,7 +2,7 @@
 
 echo '
 <div class="login-logo">
-	<img class="vox-login-logo" src="' . HTML_PATH_CORE_IMG . 'vox-logo.svg" alt="Vox İşitme Cihazları">
+	<img class="vox-login-logo" src="' . HTML_PATH_CORE_IMG . 'vox-logo.svg?v=' . filemtime(PATH_KERNEL . 'img' . DS . 'vox-logo.svg') . '" alt="Vox İşitme Cihazları">
 </div>
 ';
 

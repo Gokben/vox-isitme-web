@@ -2,7 +2,7 @@
 <ul class="nav flex-column pt-4">
 
 	<li class="nav-item mb-4">
-		<img src="<?php echo HTML_PATH_CORE_IMG ?>vox-logo.svg" width="132" height="51" alt="Vox İşitme Cihazları">
+		<img src="<?php echo HTML_PATH_CORE_IMG ?>vox-logo.svg?v=<?php echo filemtime(PATH_KERNEL.'img'.DS.'vox-logo.svg') ?>" width="132" height="64" alt="Vox İşitme Cihazları">
 	</li>
 
 	<li class="nav-item">
