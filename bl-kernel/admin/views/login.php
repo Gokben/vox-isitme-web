@@ -1,11 +1,8 @@
 <?php defined('BLUDIT') or die('Bludit CMS.');
 
 echo '
-<div class="login-logo">
-	<div class="vox-admin-brand" aria-label="Vox İşitme Cihazları">
-		<span class="vox-admin-brand-mark">V<img src="' . HTML_PATH_ROOT . 'bl-themes/vox/img/favicon-transparent.png" alt="">X</span>
-		<span class="vox-admin-brand-label">İŞİTME CİHAZLARI</span>
-	</div>
+<div class="login-logo" aria-label="Vox İşitme">
+	<span class="vox-login-wordmark"><b>V</b><img src="' . HTML_PATH_ROOT . 'bl-themes/vox/img/favicon-transparent.png" alt=""><b>X</b></span>
 </div>
 ';
 
@@ -16,68 +13,44 @@ echo Bootstrap::formInputHidden(array(
 	'value' => $security->getTokenCSRF()
 ));
 
-// Username field with icon
 echo '
 <div class="form-group">
-	<label for="jsusername">' . $L->g('Username') . '</label>
-	<div class="input-icon-wrapper">
-		<input type="text"
-			dir="auto"
-			value="' . (isset($_POST['username']) ? Sanitize::html($_POST['username']) : '') . '"
-			class="form-control"
-			id="jsusername"
-			name="username"
-			placeholder="' . $L->g('Username') . '"
-			autocomplete="username"
-			autofocus>
-		<span class="input-icon">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-				<circle cx="12" cy="7" r="4"></circle>
-			</svg>
-		</span>
-	</div>
+	<label for="jsusername">E-posta adresi</label>
+	<input type="text"
+		dir="auto"
+		value="' . (isset($_POST['username']) ? Sanitize::html($_POST['username']) : '') . '"
+		class="form-control"
+		id="jsusername"
+		name="username"
+		placeholder="E-posta adresiniz veya kullanıcı adınız"
+		autocomplete="username"
+		required
+		autofocus>
 </div>
-';
 
-// Password field with icon
-echo '
 <div class="form-group">
-	<label for="jspassword">' . $L->g('Password') . '</label>
-	<div class="input-icon-wrapper">
+	<label for="jspassword">Şifre</label>
+	<div class="password-field">
 		<input type="password"
 			class="form-control"
 			id="jspassword"
 			name="password"
-			placeholder="' . $L->g('Password') . '"
-			autocomplete="current-password">
-		<span class="input-icon">
-			<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-				<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-			</svg>
-		</span>
+			placeholder="Şifreniz"
+			autocomplete="current-password"
+			required>
+		<button class="password-toggle" type="button" aria-label="Şifreyi göster" aria-pressed="false">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+		</button>
 	</div>
 </div>
-';
 
-// Remember me checkbox
-echo '
 <div class="form-check">
 	<input class="form-check-input" type="checkbox" value="true" id="jsremember" name="remember">
-	<label class="form-check-label" for="jsremember">' . $L->g('Remember me') . '</label>
+	<label class="form-check-label" for="jsremember">Beni hatırla</label>
 </div>
-';
 
-// Submit button
-echo '
-<button type="submit" class="btn btn-login" name="save">
-	<span>' . $L->g('Login') . '</span>
-	<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px; vertical-align: middle;">
-		<path d="M5 12h14"></path>
-		<path d="M12 5l7 7-7 7"></path>
-	</svg>
-</button>
-';
+<button type="submit" class="btn btn-login" name="save">Giriş yap</button>
+</form>
 
-echo '</form>';
+<p class="login-authorized">Yalnızca yetkili personel erişebilir</p>
+';

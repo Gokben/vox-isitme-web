@@ -12,6 +12,7 @@ function checkLogin($args)
 {
 	global $security;
 	global $login;
+	global $users;
 	global $L;
 
 	if ($security->isBlocked()) {
@@ -19,9 +20,12 @@ function checkLogin($args)
 		return false;
 	}
 
-	if ($login->verifyUser($_POST['username'], $_POST['password'])) {
+	$identity = trim((string)($_POST['username'] ?? ''));
+	$username = filter_var($identity, FILTER_VALIDATE_EMAIL) ? $users->getByEmail($identity) : $identity;
+
+	if ($username !== false && $login->verifyUser($username, $_POST['password'])) {
 		if (isset($_POST['remember'])) {
-			$login->setRememberMe($_POST['username']);
+			$login->setRememberMe($username);
 		}
 		// Renew the token. This token will be the same inside the session for multiple forms.
 		$security->generateTokenCSRF();
