@@ -13,7 +13,7 @@ if (!file_exists('bl-content/databases/site.php')) {
 	$base = rtrim($base, '/');
 	$base = rtrim($base, '\\'); // Workaround for Windows Servers
 	header('Location:'.$base.'/install.php');
-	exit('<a href="./install.php">Install Bludit first.</a>');
+	exit('<a href="./install.php">Önce site kurulumunu tamamlayın.</a>');
 }
 
 // Load time init

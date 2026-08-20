@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title><?php echo (defined('BLUDIT_PRO') ? $site->title() : 'BLUDIT') ?> - Login</title>
+  <title><?php echo Sanitize::html($site->title()) ?> - Giriş</title>
   <meta charset="<?php echo CHARSET ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="robots" content="noindex,nofollow">

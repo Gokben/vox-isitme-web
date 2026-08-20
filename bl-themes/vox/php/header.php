@@ -7,7 +7,6 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Bludit <?php echo BLUDIT_VERSION; ?>">
     <meta name="theme-color" content="#064b2b">
     <?php echo Theme::metaTagTitle(); ?>
     <?php echo Theme::metaTagDescription(); ?>

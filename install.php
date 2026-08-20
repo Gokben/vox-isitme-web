@@ -584,7 +584,7 @@ function redirect($url)
 // ============================================================================
 
 if (alreadyInstalled()) {
-	$errorText = 'Bludit is already installed ;)';
+	$errorText = 'Sistem zaten kurulu.';
 	error_log('[ERROR] ' . $errorText, 0);
 	exit($errorText);
 }
@@ -611,7 +611,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 
 <head>
-	<title><?php echo $L->get('Bludit Installer') ?></title>
+	<title>Vox İşitme Kurulum</title>
 	<meta charset="<?php echo CHARSET ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="robots" content="noindex,nofollow">
@@ -861,9 +861,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		<div class="installer-card">
 			<div class="installer-logo">
 				<div class="logo-icon">
-					<img src="bl-kernel/admin/themes/booty/logo.svg" alt="Bludit">
+					<img src="bl-kernel/img/favicon.png" alt="Vox İşitme">
 				</div>
-				<h1><?php echo $L->get('Bludit Installer') ?></h1>
+				<h1>Vox İşitme Kurulum</h1>
 			</div>
 
 			<?php

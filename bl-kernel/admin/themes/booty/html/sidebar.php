@@ -3,9 +3,9 @@
 
 	<li class="nav-item mb-4" style="display: flex; align-items: center;">
 		<div style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--primary-gradient); border-radius: 8px; box-shadow: var(--shadow-sm); flex-shrink: 0;">
-			<img src="<?php echo HTML_PATH_CORE_IMG ?>logo.svg" width="18" height="18" alt="bludit-logo" style="filter: brightness(0) invert(1);">
+			<img src="<?php echo HTML_PATH_CORE_IMG ?>favicon.png" width="24" height="24" alt="Vox İşitme">
 		</div>
-		<span style="margin-left: 10px; font-weight: 600; font-size: 1rem; color: var(--text-primary); line-height: 1;"><?php echo (defined('BLUDIT_PRO'))?'BLUDIT PRO':'BLUDIT' ?></span>
+		<span style="margin-left: 10px; font-weight: 600; font-size: 1rem; color: var(--text-primary); line-height: 1;">VOX İŞİTME</span>
 	</li>
 
 	<li class="nav-item">
