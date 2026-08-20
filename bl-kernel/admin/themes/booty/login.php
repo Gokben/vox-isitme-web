@@ -59,6 +59,14 @@
       margin-bottom: 30px;
     }
 
+    .vox-login-logo {
+      display: block;
+      width: 220px;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+
     .login-logo .logo-icon {
       width: 70px;
       height: 70px;

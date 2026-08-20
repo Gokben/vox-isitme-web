@@ -1,19 +1,8 @@
 <?php defined('BLUDIT') or die('Bludit CMS.');
 
-// Logo and title
-$logoPath = HTML_PATH_CORE_IMG . 'favicon.png';
-$logoClass = 'logo-icon custom-logo';
-if (defined('BLUDIT_PRO') && $site->logo(false)) {
-	$logoPath = $site->logo(true);
-	$logoClass = 'logo-icon custom-logo';
-}
-
 echo '
 <div class="login-logo">
-	<div class="' . $logoClass . '">
-		<img src="' . $logoPath . '" alt="Logo">
-	</div>
-	<h1>' . Sanitize::html($site->title()) . '</h1>
+	<img class="vox-login-logo" src="' . HTML_PATH_CORE_IMG . 'vox-logo.svg" alt="Vox İşitme Cihazları">
 </div>
 ';
 

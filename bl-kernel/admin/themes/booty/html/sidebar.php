@@ -1,11 +1,8 @@
 <!-- Use .flex-column to set a vertical direction -->
 <ul class="nav flex-column pt-4">
 
-	<li class="nav-item mb-4" style="display: flex; align-items: center;">
-		<div style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--primary-gradient); border-radius: 8px; box-shadow: var(--shadow-sm); flex-shrink: 0;">
-			<img src="<?php echo HTML_PATH_CORE_IMG ?>favicon.png" width="24" height="24" alt="Vox İşitme">
-		</div>
-		<span style="margin-left: 10px; font-weight: 600; font-size: 1rem; color: var(--text-primary); line-height: 1;">VOX İŞİTME</span>
+	<li class="nav-item mb-4">
+		<img src="<?php echo HTML_PATH_CORE_IMG ?>vox-logo.svg" width="132" height="51" alt="Vox İşitme Cihazları">
 	</li>
 
 	<li class="nav-item">
