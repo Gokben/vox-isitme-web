@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex,nofollow">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="<?php echo HTML_PATH_CORE_IMG . 'favicon.png?version=' . BLUDIT_VERSION ?>">
+  <link rel="icon" type="image/png" sizes="64x64" href="<?php echo HTML_PATH_CORE_IMG . 'favicon.png?v=' . filemtime(PATH_KERNEL . 'img' . DS . 'favicon.png') ?>">
 
   <!-- CSS -->
   <?php
