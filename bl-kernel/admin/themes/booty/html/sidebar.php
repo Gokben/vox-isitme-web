@@ -4,7 +4,6 @@
 	<li class="nav-item mb-4">
 		<a class="vox-admin-brand" href="<?php echo HTML_PATH_ADMIN_ROOT.'dashboard' ?>" aria-label="Vox İşitme yönetim ana sayfası">
 			<span class="vox-admin-brand-mark">V<img src="<?php echo HTML_PATH_ROOT ?>bl-themes/vox/img/brand-mark.png?v=<?php echo filemtime(THEME_DIR_IMG.'brand-mark.png') ?>" alt="">X</span>
-			<span class="vox-admin-brand-label">İŞİTME CİHAZLARI</span>
 		</a>
 	</li>
 

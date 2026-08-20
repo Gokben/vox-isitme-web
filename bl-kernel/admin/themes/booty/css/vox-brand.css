@@ -1,35 +1,31 @@
 .vox-admin-brand {
-  display: inline-block;
-  padding: 14px 18px;
-  color: #fff;
-  background: #064b2b;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  color: #050505;
+  background: transparent;
   line-height: 1;
   text-decoration: none;
 }
 
 .vox-admin-brand:hover {
-  color: #fff;
+  color: #050505;
   text-decoration: none;
 }
 
 .vox-admin-brand-mark {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font: 800 34px/30px Manrope, sans-serif;
-  letter-spacing: -3px;
+  gap: 3px;
+  color: #050505;
+  font: 800 50px/.8 Manrope, Arial, sans-serif;
+  letter-spacing: -6px;
 }
 
 .vox-admin-brand-mark img {
-  width: 32px;
-  height: 32px;
+  width: 42px;
+  height: 42px;
+  margin: 0 4px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.vox-admin-brand-label {
-  display: block;
-  margin-top: 5px;
-  font: 800 10px/1 "DM Sans", sans-serif;
-  letter-spacing: .35px;
 }
