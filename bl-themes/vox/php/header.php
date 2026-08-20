@@ -15,7 +15,7 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-    <?php echo Theme::css('css/style.css'); ?>
+    <link rel="stylesheet" type="text/css" href="<?php echo DOMAIN_THEME; ?>css/style.css?v=<?php echo filemtime(THEME_DIR_CSS . 'style.css'); ?>">
     <?php Theme::plugins('siteHead'); ?>
 </head>
 <body class="<?php echo $bodyClass; ?>">

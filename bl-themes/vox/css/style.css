@@ -21,3 +21,9 @@ footer{padding:62px 0 22px;color:#e1f0df;background:var(--deep)}.footer-grid{dis
 @media(max-width:850px){.is-appointment .main-nav{display:none}.is-appointment .grid{grid-template-columns:1fr;gap:30px}.is-appointment .top{align-items:start;flex-direction:column}.is-appointment .footer-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:540px){.is-appointment .topbar-inner{justify-content:center}.is-appointment .topbar-group:last-child{display:none}.is-appointment .nav-appointment{display:inline-flex;margin-left:auto;padding:10px 14px}.is-appointment .form,.is-appointment .footer-grid{grid-template-columns:1fr}.is-appointment .full{grid-column:auto}.is-appointment .shell{padding:19px}.is-appointment .calendar{padding:15px}.is-appointment .copyright{display:block}.is-appointment .copyright span{display:block;margin-bottom:7px}}
 .is-appointment .intro .kicker{display:block;letter-spacing:1.6px}.is-appointment .intro .kicker:before{content:none}
+
+/* Randevu sayfasındaki header tüm sayfalarda ortak kullanılır. */
+.site-header,.is-home .site-header{position:relative;top:auto;left:auto;right:auto;background:var(--deep);color:#fff}
+.nav,.is-home .nav{min-height:0;padding:20px 0;gap:20px;border-bottom:0}
+.main-nav{gap:22px}
+@media(max-width:600px){.nav,.is-home .nav{min-height:0;padding:20px 0}}
