@@ -23,6 +23,8 @@
 </footer>
 <?php echo Theme::js('js/site.js'); ?>
 <?php if (!empty($voxAdminLoggedIn)): ?><script src="<?php echo DOMAIN_THEME; ?>js/blocks.js?v=<?php echo filemtime(THEME_DIR_JS . 'blocks.js'); ?>"></script><?php endif; ?>
+<?php if (!empty($voxAdminLoggedIn) && !empty($isBlogRoute)): ?><script src="<?php echo DOMAIN_THEME; ?>js/blog-admin.js?v=<?php echo filemtime(THEME_DIR_JS . 'blog-admin.js'); ?>"></script><?php endif; ?>
+<?php if (!empty($isBlogRoute)): ?><script src="<?php echo DOMAIN_THEME; ?>js/blog-stats.js?v=<?php echo filemtime(THEME_DIR_JS . 'blog-stats.js'); ?>"></script><?php endif; ?>
 <?php Theme::plugins('siteBodyEnd'); ?>
 </body>
 </html>

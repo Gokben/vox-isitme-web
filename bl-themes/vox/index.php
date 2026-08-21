@@ -21,6 +21,98 @@ $isContactRoute = $requestPath === $contactPath;
 if ($isBlogRoute || $isContactRoute) {
     header('HTTP/1.0 200 OK', true, 200);
 }
+
+if ($isBlogRoute) {
+$voxBlogVisitorCookie = 'VOX-BLOG-VISITOR';
+$voxBlogVisitorId = isset($_COOKIE[$voxBlogVisitorCookie]) ? (string)$_COOKIE[$voxBlogVisitorCookie] : '';
+if (!preg_match('/^[a-f0-9]{32}$/', $voxBlogVisitorId)) {
+    $voxBlogVisitorId = bin2hex(random_bytes(16));
+    setcookie($voxBlogVisitorCookie, $voxBlogVisitorId, [
+        'expires' => time() + 31536000,
+        'path' => $site->urlPath() ?: '/',
+        'secure' => $site->isHTTPS(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+$voxBlogVisitorHash = hash('sha256', $voxBlogVisitorId . '|' . $site->title());
+$voxBlogStatsFile = PATH_DATABASES . 'vox-blog-stats.json';
+$voxMutateBlogStats = static function (callable $callback) use ($voxBlogStatsFile) {
+    $handle = @fopen($voxBlogStatsFile, 'c+');
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        if (is_resource($handle)) {
+            fclose($handle);
+        }
+        return false;
+    }
+    rewind($handle);
+    $raw = stream_get_contents($handle);
+    $database = $raw !== false && $raw !== '' ? json_decode($raw, true) : [];
+    if (!is_array($database)) {
+        $database = [];
+    }
+    $result = $callback($database);
+    $json = json_encode($database, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    if ($json === false) {
+        flock($handle, LOCK_UN);
+        fclose($handle);
+        return false;
+    }
+    rewind($handle);
+    ftruncate($handle, 0);
+    $saved = fwrite($handle, $json) !== false;
+    fflush($handle);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+    return $saved ? $result : false;
+};
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_blog_stats_action'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    $action = (string)$_POST['vox_blog_stats_action'];
+    $slug = isset($_POST['slug']) ? trim((string)$_POST['slug']) : '';
+    if ($action !== 'toggle-like' || !preg_match('~^[a-z0-9-]{3,180}$~', $slug)) {
+        http_response_code(400);
+        exit(json_encode(['status' => 1, 'message' => 'Geçersiz işlem.'], JSON_UNESCAPED_UNICODE));
+    }
+    $blogDatabaseFile = PATH_DATABASES . 'vox-blog.json';
+    $blogDatabase = is_file($blogDatabaseFile) ? json_decode((string)file_get_contents($blogDatabaseFile), true) : [];
+    $postExists = false;
+    if (is_array($blogDatabase)) {
+        foreach ($blogDatabase as $post) {
+            if (is_array($post) && isset($post['slug']) && hash_equals((string)$post['slug'], $slug)) {
+                $postExists = true;
+                break;
+            }
+        }
+    }
+    if (!$postExists) {
+        http_response_code(404);
+        exit(json_encode(['status' => 1, 'message' => 'Blog yazısı bulunamadı.'], JSON_UNESCAPED_UNICODE));
+    }
+    $statsResult = $voxMutateBlogStats(static function (array &$stats) use ($slug, $voxBlogVisitorHash): array {
+        if (!isset($stats[$slug]) || !is_array($stats[$slug])) {
+            $stats[$slug] = ['visitors' => [], 'likes' => []];
+        }
+        $stats[$slug]['visitors'] = isset($stats[$slug]['visitors']) && is_array($stats[$slug]['visitors']) ? $stats[$slug]['visitors'] : [];
+        $stats[$slug]['likes'] = isset($stats[$slug]['likes']) && is_array($stats[$slug]['likes']) ? $stats[$slug]['likes'] : [];
+        $stats[$slug]['visitors'][$voxBlogVisitorHash] = time();
+        if (isset($stats[$slug]['likes'][$voxBlogVisitorHash])) {
+            unset($stats[$slug]['likes'][$voxBlogVisitorHash]);
+            $liked = false;
+        } else {
+            $stats[$slug]['likes'][$voxBlogVisitorHash] = time();
+            $liked = true;
+        }
+        return ['views' => count($stats[$slug]['visitors']), 'likes' => count($stats[$slug]['likes']), 'liked' => $liked];
+    });
+    if ($statsResult === false) {
+        http_response_code(500);
+        exit(json_encode(['status' => 1, 'message' => 'Beğeni kaydedilemedi.'], JSON_UNESCAPED_UNICODE));
+    }
+    exit(json_encode(['status' => 0] + $statsResult, JSON_UNESCAPED_UNICODE));
+}
+}
 $voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
 $voxAdminEditLabel = 'Ana sayfayı düzenle';
 $voxBlockPageKey = 'home';

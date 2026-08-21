@@ -56,6 +56,25 @@ $blogPosts = [
     ],
 ];
 
+$blogDatabaseFile = PATH_DATABASES . 'vox-blog.json';
+if (is_file($blogDatabaseFile)) {
+    $storedBlogPosts = json_decode((string)file_get_contents($blogDatabaseFile), true);
+    if (is_array($storedBlogPosts)) {
+        $blogPosts = $storedBlogPosts;
+    }
+} else {
+    @file_put_contents(
+        $blogDatabaseFile,
+        json_encode($blogPosts, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT),
+        LOCK_EX
+    );
+}
+
+$blogPlainContent = static function (string $content): string {
+    $content = preg_replace('~</(?:p|h2|h3|li)>~i', "\n\n", $content);
+    return trim(html_entity_decode(strip_tags((string)$content), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+};
+
 $requestedPost = trim((string)($_GET['yazi'] ?? ''));
 $activePost = null;
 foreach ($blogPosts as $post) {
@@ -64,12 +83,41 @@ foreach ($blogPosts as $post) {
         break;
     }
 }
+
+$activeBlogStats = ['views' => 0, 'likes' => 0, 'liked' => false];
+if ($activePost && isset($voxMutateBlogStats, $voxBlogVisitorHash) && is_callable($voxMutateBlogStats)) {
+    $recordedStats = $voxMutateBlogStats(static function (array &$stats) use ($activePost, $voxBlogVisitorHash): array {
+        $slug = (string)$activePost['slug'];
+        if (!isset($stats[$slug]) || !is_array($stats[$slug])) {
+            $stats[$slug] = ['visitors' => [], 'likes' => []];
+        }
+        $stats[$slug]['visitors'] = isset($stats[$slug]['visitors']) && is_array($stats[$slug]['visitors']) ? $stats[$slug]['visitors'] : [];
+        $stats[$slug]['likes'] = isset($stats[$slug]['likes']) && is_array($stats[$slug]['likes']) ? $stats[$slug]['likes'] : [];
+        if (!isset($stats[$slug]['visitors'][$voxBlogVisitorHash])) {
+            $stats[$slug]['visitors'][$voxBlogVisitorHash] = time();
+        }
+        return [
+            'views' => count($stats[$slug]['visitors']),
+            'likes' => count($stats[$slug]['likes']),
+            'liked' => isset($stats[$slug]['likes'][$voxBlogVisitorHash]),
+        ];
+    });
+    if (is_array($recordedStats)) {
+        $activeBlogStats = $recordedStats;
+    }
+}
 ?>
 
 <?php if ($activePost): ?>
 <article class="blog-article container">
     <a class="blog-back" href="<?php echo $blogUrl; ?>">← Tüm yazılar</a>
+    <?php if (!empty($voxAdminLoggedIn)): ?><div class="vox-blog-admin-actions"><button type="button" data-vox-blog-edit data-blog-slug="<?php echo htmlspecialchars($activePost['slug'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-date="<?php echo htmlspecialchars($activePost['date'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-title="<?php echo htmlspecialchars($activePost['title'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-image="<?php echo htmlspecialchars($activePost['image'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-alt="<?php echo htmlspecialchars($activePost['alt'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-excerpt="<?php echo htmlspecialchars($activePost['excerpt'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-content="<?php echo htmlspecialchars($blogPlainContent($activePost['content']), ENT_QUOTES, 'UTF-8'); ?>">Yazıyı düzenle</button><button type="button" data-vox-blog-delete="<?php echo htmlspecialchars($activePost['slug'], ENT_QUOTES, 'UTF-8'); ?>">Yazıyı sil</button></div><?php endif; ?>
     <header><time><?php echo htmlspecialchars($activePost['date'], ENT_QUOTES, 'UTF-8'); ?></time><h1><?php echo htmlspecialchars($activePost['title'], ENT_QUOTES, 'UTF-8'); ?></h1><p><?php echo htmlspecialchars($activePost['excerpt'], ENT_QUOTES, 'UTF-8'); ?></p></header>
+    <div class="blog-post-stats" data-vox-blog-stats>
+        <span class="blog-view-count" title="Bu yazıyı görüntüleyen tekil ziyaretçi sayısı"><span aria-hidden="true">◉</span> <b data-vox-view-count><?php echo (int)$activeBlogStats['views']; ?></b> tekil ziyaretçi</span>
+        <button class="blog-like-button<?php echo $activeBlogStats['liked'] ? ' liked' : ''; ?>" type="button" aria-pressed="<?php echo $activeBlogStats['liked'] ? 'true' : 'false'; ?>" data-vox-blog-like data-slug="<?php echo htmlspecialchars($activePost['slug'], ENT_QUOTES, 'UTF-8'); ?>" data-endpoint="<?php echo htmlspecialchars($blogUrl, ENT_QUOTES, 'UTF-8'); ?>"><span aria-hidden="true">♥</span> <b data-vox-like-count><?php echo (int)$activeBlogStats['likes']; ?></b> <span data-vox-like-label><?php echo $activeBlogStats['liked'] ? 'Beğenildi' : 'Beğen'; ?></span></button>
+        <span class="blog-stats-status" data-vox-blog-stats-status aria-live="polite"></span>
+    </div>
     <img class="blog-article-cover" src="<?php echo htmlspecialchars($activePost['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($activePost['alt'], ENT_QUOTES, 'UTF-8'); ?>">
     <div class="blog-article-content"><?php echo $activePost['content']; ?></div>
     <div class="blog-article-cta"><strong>İşitmenizle ilgili sorularınız mı var?</strong><a class="button" href="<?php echo $appointmentUrl; ?>">Randevu Al <b class="arrow">→</b></a></div>
@@ -80,6 +128,7 @@ foreach ($blogPosts as $post) {
     <div class="blog-grid">
         <?php foreach ($blogPosts as $post): ?>
         <article class="blog-card">
+            <?php if (!empty($voxAdminLoggedIn)): ?><div class="vox-blog-admin-actions"><button type="button" data-vox-blog-edit data-blog-slug="<?php echo htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-date="<?php echo htmlspecialchars($post['date'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-title="<?php echo htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-image="<?php echo htmlspecialchars($post['image'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-alt="<?php echo htmlspecialchars($post['alt'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-excerpt="<?php echo htmlspecialchars($post['excerpt'], ENT_QUOTES, 'UTF-8'); ?>" data-blog-content="<?php echo htmlspecialchars($blogPlainContent($post['content']), ENT_QUOTES, 'UTF-8'); ?>">Düzenle</button><button type="button" data-vox-blog-delete="<?php echo htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8'); ?>">Sil</button></div><?php endif; ?>
             <a class="blog-card-image" href="<?php echo $blogUrl . '?yazi=' . rawurlencode($post['slug']); ?>"><img src="<?php echo htmlspecialchars($post['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($post['alt'], ENT_QUOTES, 'UTF-8'); ?>" loading="lazy"></a>
             <time><?php echo htmlspecialchars($post['date'], ENT_QUOTES, 'UTF-8'); ?></time>
             <h2><a href="<?php echo $blogUrl . '?yazi=' . rawurlencode($post['slug']); ?>"><?php echo htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8'); ?></a></h2>

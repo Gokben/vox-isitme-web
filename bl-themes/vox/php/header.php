@@ -75,6 +75,24 @@ if (!empty($voxAdminLoggedIn)) {
     </form>
 </dialog>
 <?php endif; ?>
+<?php if (!empty($isBlogRoute)): ?>
+<dialog class="vox-block-dialog vox-blog-dialog" data-vox-blog-dialog data-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-blog" data-upload-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-home-image" data-token="<?php echo htmlspecialchars((string)$security->getTokenCSRF(), ENT_QUOTES, 'UTF-8'); ?>">
+    <form method="dialog" class="vox-block-form" data-vox-blog-form>
+        <div class="vox-block-dialog-head"><div><span>Blog yönetimi</span><h2>Blog yazısını düzenle</h2></div><button type="button" aria-label="Kapat" data-vox-blog-close>×</button></div>
+        <input name="slug" type="hidden">
+        <label>Başlık<input name="title" type="text" maxlength="180" required></label>
+        <label>Tarih<input name="date" type="text" maxlength="60" placeholder="20 Ağustos 2026" required></label>
+        <label>Özet<textarea name="excerpt" rows="3" maxlength="600" required></textarea></label>
+        <label>Yazı içeriği<textarea name="content" rows="10" maxlength="12000" required></textarea></label>
+        <label>Görsel açıklaması<input name="alt" type="text" maxlength="180"></label>
+        <label>Bilgisayardan yeni görsel yükle<input name="blogImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" data-vox-blog-image-file></label>
+        <div class="vox-image-or"><span>veya mevcut görsel adresi</span></div>
+        <label>Görsel adresi<input name="image" type="url" maxlength="1000" required></label>
+        <p class="vox-block-form-status" data-vox-blog-status aria-live="polite"></p>
+        <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-blog-close>Vazgeç</button><button type="submit" class="vox-block-save">Değişiklikleri kaydet</button></div>
+    </form>
+</dialog>
+<?php endif; ?>
 <?php endif; ?>
 <a class="skip-link" href="#main-content">İçeriğe geç</a>
 <header class="site-header">
