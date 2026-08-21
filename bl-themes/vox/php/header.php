@@ -1,6 +1,6 @@
 <?php
-$viewSlug = !empty($isBlogRoute) ? 'blog' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '');
-$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : 'is-inner'));
+$viewSlug = !empty($isBlogRoute) ? 'blog' : (!empty($isContactRoute) ? 'iletisim' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : ''));
+$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : ($viewSlug === 'iletisim' ? 'is-contact' : 'is-inner')));
 if (!empty($voxAdminLoggedIn)) {
     $bodyClass .= ' has-vox-edit-bar';
 }
@@ -14,6 +14,9 @@ if (!empty($voxAdminLoggedIn)) {
     <?php if (!empty($isBlogRoute)): ?>
     <title>Blog Yazıları | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
     <meta name="description" content="İşitme sağlığı, cihaz teknolojileri ve günlük yaşam için Vox İşitme uzmanlarından yararlı bilgiler.">
+    <?php elseif (!empty($isContactRoute)): ?>
+    <title>İletişim | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="Vox İşitme Sefaköy ve Bahçeşehir şubelerinin adres, telefon ve harita bilgileri.">
     <?php else: ?>
     <?php echo Theme::metaTagTitle(); ?>
     <?php echo Theme::metaTagDescription(); ?>
@@ -84,7 +87,7 @@ if (!empty($voxAdminLoggedIn)) {
             <a href="<?php echo $aboutUrl; ?>">Hakkımızda</a>
             <a href="<?php echo $homeUrl; ?>#galeri">Galeri</a>
             <a href="<?php echo $blogUrl; ?>">Blog</a>
-            <a href="<?php echo $homeUrl; ?>#iletisim">İletişim</a>
+            <a href="<?php echo $contactUrl; ?>">İletişim</a>
         </nav>
         <a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a>
     </div>

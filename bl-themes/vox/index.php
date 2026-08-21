@@ -11,10 +11,16 @@ $baseUrl = rtrim(Theme::siteUrl(), '/');
 $homeUrl = $baseUrl . '/';
 $aboutUrl = $baseUrl . '/hakkimizda';
 $blogUrl = $baseUrl . '/blog';
+$contactUrl = $baseUrl . '/iletisim';
 $appointmentUrl = $baseUrl . '/randevu';
 $requestPath = rtrim((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/'), '/');
 $blogPath = rtrim((string)(parse_url($blogUrl, PHP_URL_PATH) ?: '/blog'), '/');
 $isBlogRoute = $requestPath === $blogPath;
+$contactPath = rtrim((string)(parse_url($contactUrl, PHP_URL_PATH) ?: '/iletisim'), '/');
+$isContactRoute = $requestPath === $contactPath;
+if ($isBlogRoute || $isContactRoute) {
+    header('HTTP/1.0 200 OK', true, 200);
+}
 $voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
 $voxAdminEditLabel = 'Ana sayfayı düzenle';
 $voxBlockPageKey = 'home';
@@ -23,6 +29,10 @@ if ($isBlogRoute) {
     $voxAdminEditUrl = DOMAIN_ADMIN . 'content';
     $voxAdminEditLabel = 'Blog içeriklerini yönet';
     $voxBlockPageKey = 'blog';
+} elseif ($isContactRoute) {
+    $voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
+    $voxAdminEditLabel = 'İletişim bilgilerini yönet';
+    $voxBlockPageKey = 'iletisim';
 } elseif ($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'key')) {
     $voxAdminEditUrl = DOMAIN_ADMIN . 'edit-content/' . rawurlencode((string)$page->key());
     $voxAdminEditLabel = 'Bu sayfayı düzenle';
@@ -161,6 +171,8 @@ include THEME_DIR_PHP . 'header.php';
 
 if ($isBlogRoute) {
     include THEME_DIR_PHP . 'blog.php';
+} elseif ($isContactRoute) {
+    include THEME_DIR_PHP . 'contact.php';
 } elseif ($WHERE_AM_I === 'page') {
     $slug = method_exists($page, 'slug') ? $page->slug() : '';
     if ($slug === 'randevu') {

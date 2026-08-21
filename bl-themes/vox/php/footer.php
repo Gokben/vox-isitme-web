@@ -8,11 +8,11 @@
             </a>
             <p>Daha iyi duymanız ve hayata daha yakından katılmanız için yanınızdayız.</p>
         </div>
-        <div><h4>Menü</h4><ul><li><a href="<?php echo $homeUrl; ?>">Ana Sayfa</a></li><li><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a></li><li><a href="<?php echo $homeUrl; ?>#galeri">Galeri</a></li><li><a href="<?php echo $blogUrl; ?>">Blog</a></li><li><a href="<?php echo $homeUrl; ?>#iletisim">İletişim</a></li></ul></div>
+        <div><h4>Menü</h4><ul><li><a href="<?php echo $homeUrl; ?>">Ana Sayfa</a></li><li><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a></li><li><a href="<?php echo $homeUrl; ?>#galeri">Galeri</a></li><li><a href="<?php echo $blogUrl; ?>">Blog</a></li><li><a href="<?php echo $contactUrl; ?>">İletişim</a></li></ul></div>
         <div><h4>Hizmetler</h4><ul><li>İşitme Testi</li><li>Cihaz Danışmanlığı</li><li>Teknik Servis</li><li>Evde Hizmet</li></ul></div>
         <div>
             <h4>Sefaköy Şubesi <small>(Merkez)</small></h4>
-            <p>Kartaltepe Mah. Süvari Cad. No:8E<br>(Torkam E-5 AVM yanık/çevresi)<br>Küçükçekmece / İstanbul</p>
+            <p>Kartaltepe Mah. Süvari Cad. No:8E<br>(Torkam E-5 AVM yanı / çevresi)<br>Küçükçekmece / İstanbul</p>
             <p><a href="tel:+905011438043">+90 501 143 80 43</a></p>
             <h4>Bahçeşehir Şubesi</h4>
             <p>Bahçeşehir 1. Kısım Mah. Kemal Sunal Cad. No:21C<br>Başakşehir / İstanbul</p>
