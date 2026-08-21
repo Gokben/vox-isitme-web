@@ -3,7 +3,7 @@
 
   var dialog = document.querySelector('[data-vox-block-dialog]');
   var openButton = document.querySelector('[data-vox-block-open]');
-  if (!dialog || !openButton) return;
+  if (!dialog) return;
 
   var form = dialog.querySelector('[data-vox-block-form]');
   var typeSelect = dialog.querySelector('[data-vox-block-type]');
@@ -202,9 +202,11 @@
     dialog.showModal();
   }
 
-  openButton.addEventListener('click', function () {
-    openBlockEditor(null);
-  });
+  if (openButton) {
+    openButton.addEventListener('click', function () {
+      openBlockEditor(null);
+    });
+  }
 
   document.querySelectorAll('[data-vox-block-edit]').forEach(function (button) {
     button.addEventListener('click', function () {

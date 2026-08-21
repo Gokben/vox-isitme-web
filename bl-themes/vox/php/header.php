@@ -42,7 +42,7 @@ if (!empty($voxAdminLoggedIn)) {
             <?php else: ?>
             <a class="vox-edit-primary" href="<?php echo htmlspecialchars($voxAdminEditUrl, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($voxAdminEditLabel, ENT_QUOTES, 'UTF-8'); ?></a>
             <?php endif; ?>
-            <button class="vox-add-block-button" type="button" data-vox-block-open>+ Blok ekle</button>
+            <?php if (!empty($isBlogRoute)): ?><button class="vox-add-block-button" type="button" data-vox-block-open>+ Blok ekle</button><?php endif; ?>
             <a href="<?php echo DOMAIN_ADMIN; ?>content">Tüm sayfalar</a>
             <a href="<?php echo DOMAIN_ADMIN; ?>dashboard">Yönetim paneli</a>
             <button class="vox-exit-edit-mode" type="button" data-vox-exit-edit-mode>Düzenleme modundan çık</button>
