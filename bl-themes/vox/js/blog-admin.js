@@ -8,6 +8,15 @@
   var status = dialog.querySelector('[data-vox-blog-status]');
   var imageFile = dialog.querySelector('[data-vox-blog-image-file]');
   var token = dialog.dataset.token;
+  var manageButton = document.querySelector('[data-vox-blog-manage]');
+
+  if (manageButton) {
+    manageButton.addEventListener('click', function () {
+      document.body.classList.add('vox-blog-manage-active');
+      var firstAction = document.querySelector('.vox-blog-admin-actions');
+      if (firstAction) firstAction.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
 
   dialog.querySelectorAll('[data-vox-blog-close]').forEach(function (button) {
     button.addEventListener('click', function () { dialog.close(); });

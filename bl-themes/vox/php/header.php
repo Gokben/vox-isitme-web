@@ -39,6 +39,8 @@ if (!empty($voxAdminLoggedIn)) {
             <button class="vox-edit-primary vox-inline-edit-button" type="button" data-vox-inline-edit>Ana sayfayı düzenle</button>
             <button class="vox-inline-save" type="button" data-vox-inline-save hidden>Değişiklikleri kaydet</button>
             <button class="vox-inline-cancel" type="button" data-vox-inline-cancel hidden>Vazgeç</button>
+            <?php elseif (!empty($isBlogRoute)): ?>
+            <button class="vox-edit-primary vox-blog-manage-button" type="button" data-vox-blog-manage>Blog yazılarını düzenle</button>
             <?php else: ?>
             <a class="vox-edit-primary" href="<?php echo htmlspecialchars($voxAdminEditUrl, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($voxAdminEditLabel, ENT_QUOTES, 'UTF-8'); ?></a>
             <?php endif; ?>
