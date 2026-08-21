@@ -18,11 +18,38 @@ $blogPath = rtrim((string)(parse_url($blogUrl, PHP_URL_PATH) ?: '/blog'), '/');
 $isBlogRoute = $requestPath === $blogPath;
 $contactPath = rtrim((string)(parse_url($contactUrl, PHP_URL_PATH) ?: '/iletisim'), '/');
 $isContactRoute = $requestPath === $contactPath;
-if ($isBlogRoute || $isContactRoute) {
+$managedPagePaths = [
+    'hakkimizda' => rtrim((string)(parse_url($aboutUrl, PHP_URL_PATH) ?: '/hakkimizda'), '/'),
+    'randevu' => rtrim((string)(parse_url($appointmentUrl, PHP_URL_PATH) ?: '/randevu'), '/'),
+    'blog' => $blogPath,
+    'iletisim' => $contactPath,
+];
+$voxDisabledPagesFile = PATH_DATABASES . 'vox-disabled-pages.json';
+$voxDisabledPages = [];
+if (is_file($voxDisabledPagesFile)) {
+    $disabledPagesDecoded = json_decode((string)file_get_contents($voxDisabledPagesFile), true);
+    if (is_array($disabledPagesDecoded)) {
+        $voxDisabledPages = array_values(array_intersect($disabledPagesDecoded, array_keys($managedPagePaths)));
+    }
+}
+$voxCurrentManagedPage = '';
+foreach ($managedPagePaths as $managedSlug => $managedPath) {
+    if ($requestPath === $managedPath) {
+        $voxCurrentManagedPage = $managedSlug;
+        break;
+    }
+}
+$voxPageIsEnabled = static function (string $slug) use ($voxDisabledPages): bool {
+    return !in_array($slug, $voxDisabledPages, true);
+};
+$isVoxPageDisabled = $voxCurrentManagedPage !== '' && !$voxPageIsEnabled($voxCurrentManagedPage);
+if ($isVoxPageDisabled) {
+    header('HTTP/1.0 404 Not Found', true, 404);
+} elseif ($isBlogRoute || $isContactRoute) {
     header('HTTP/1.0 200 OK', true, 200);
 }
 
-if ($isBlogRoute) {
+if ($isBlogRoute && !$isVoxPageDisabled) {
 $voxBlogVisitorCookie = 'VOX-BLOG-VISITOR';
 $voxBlogVisitorId = isset($_COOKIE[$voxBlogVisitorCookie]) ? (string)$_COOKIE[$voxBlogVisitorCookie] : '';
 if (!preg_match('/^[a-f0-9]{32}$/', $voxBlogVisitorId)) {
@@ -117,7 +144,9 @@ $voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
 $voxAdminEditLabel = 'Ana sayfayı düzenle';
 $voxBlockPageKey = 'home';
 
-if ($isBlogRoute) {
+if ($isVoxPageDisabled) {
+    include THEME_DIR_PHP . 'disabled-page.php';
+} elseif ($isBlogRoute) {
     $voxAdminEditUrl = DOMAIN_ADMIN . 'content';
     $voxAdminEditLabel = 'Blog içeriklerini yönet';
     $voxBlockPageKey = 'blog';

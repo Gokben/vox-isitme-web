@@ -66,3 +66,24 @@
 @media(max-width:1100px){.vox-media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.vox-media-upload-card{grid-template-columns:1fr 1fr}.vox-media-upload-card>.btn{grid-column:1/-1}}
 @media(max-width:760px){.vox-media-upload-card{grid-template-columns:1fr}.vox-media-upload-card>.btn{grid-column:auto}.vox-media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.vox-media-grid{grid-template-columns:1fr}}
+
+.vox-site-pages-panel { margin: 0 0 34px; overflow: hidden; border: 1px solid #dfe6df; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(28,63,39,.05); }
+.vox-site-pages-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 24px; border-bottom: 1px solid #e7ece8; background: #f7faf7; }
+.vox-site-pages-heading h2 { margin: 0 0 4px; color: #163a25; font-size: 20px; font-weight: 750; }
+.vox-site-pages-heading p { margin: 0; color: #6e7a71; font-size: 13px; }
+.vox-site-pages-heading>span { flex: 0 0 auto; padding: 6px 10px; border-radius: 999px; color: #166c3a; background: #e4f4e8; font-size: 12px; font-weight: 700; }
+.vox-site-pages-table { margin: 0; }
+.vox-site-pages-table th { border-top: 0; color: #69736c; background: #fff; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+.vox-site-pages-table td { vertical-align: middle; }
+.vox-site-pages-table td:first-child strong,.vox-site-pages-table td:first-child small { display: block; }
+.vox-site-pages-table td:first-child small { max-width: 430px; overflow: hidden; color: #829087; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.vox-page-status { display: inline-block; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.vox-page-status.is-live { color: #16713d; background: #e4f4e8; }
+.vox-site-page-actions { white-space: nowrap; }
+.vox-site-page-actions .btn { margin-left: 5px; }
+.vox-deleted-pages { margin: 0 18px 18px; border: 1px solid #eadedc; border-radius: 10px; background: #fffafa; }
+.vox-deleted-pages summary { padding: 13px 15px; color: #8b463e; font-size: 13px; font-weight: 700; cursor: pointer; }
+.vox-deleted-pages>div { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; border-top: 1px solid #eee2e0; }
+.vox-deleted-pages>div span strong,.vox-deleted-pages>div span small { display: block; }
+.vox-deleted-pages>div span small { color: #927f7c; }
+@media(max-width:760px){.vox-site-pages-heading{align-items:flex-start;flex-direction:column}.vox-site-page-actions .btn{display:block;width:100%;margin:5px 0 0}.vox-site-pages-table th:nth-child(2),.vox-site-pages-table td:nth-child(2),.vox-site-pages-table th:nth-child(3),.vox-site-pages-table td:nth-child(3){display:none}}

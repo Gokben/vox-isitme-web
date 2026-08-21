@@ -106,12 +106,12 @@ if (!empty($voxAdminLoggedIn)) {
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><b class="sr-only">Menüyü aç</b></button>
         <nav id="main-navigation" class="main-nav" aria-label="Ana menü">
             <a href="<?php echo $homeUrl; ?>">Ana Sayfa</a>
-            <a href="<?php echo $aboutUrl; ?>">Hakkımızda</a>
+            <?php if ($voxPageIsEnabled('hakkimizda')): ?><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a><?php endif; ?>
             <a href="<?php echo $homeUrl; ?>#galeri">Galeri</a>
-            <a href="<?php echo $blogUrl; ?>">Blog</a>
-            <a href="<?php echo $contactUrl; ?>">İletişim</a>
+            <?php if ($voxPageIsEnabled('blog')): ?><a href="<?php echo $blogUrl; ?>">Blog</a><?php endif; ?>
+            <?php if ($voxPageIsEnabled('iletisim')): ?><a href="<?php echo $contactUrl; ?>">İletişim</a><?php endif; ?>
         </nav>
-        <a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a>
+        <?php if ($voxPageIsEnabled('randevu')): ?><a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a><?php endif; ?>
     </div>
 </header>
 <main id="main-content">

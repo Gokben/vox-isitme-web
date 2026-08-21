@@ -248,7 +248,100 @@ function tablePages() {
 	echo '</tbody></table>';
 }
 
+function voxSitePagesPanel() {
+	global $pages;
+
+	$baseUrl = rtrim(DOMAIN_BASE, '/');
+	$disabledFile = PATH_DATABASES.'vox-disabled-pages.json';
+	$disabledPages = array();
+	if (is_file($disabledFile)) {
+		$decoded = json_decode((string)file_get_contents($disabledFile), true);
+		if (is_array($decoded)) {
+			$disabledPages = $decoded;
+		}
+	}
+
+	$sitePages = array(
+		array('slug'=>'home', 'title'=>'Ana Sayfa', 'url'=>$baseUrl.'/', 'type'=>'Ana sayfa', 'editable'=>false),
+		array('slug'=>'hakkimizda', 'title'=>'Hakkımızda', 'url'=>$baseUrl.'/hakkimizda', 'type'=>'Sayfa', 'editable'=>true),
+		array('slug'=>'randevu', 'title'=>'Randevu', 'url'=>$baseUrl.'/randevu', 'type'=>'Sayfa', 'editable'=>true),
+		array('slug'=>'blog', 'title'=>'Blog', 'url'=>$baseUrl.'/blog', 'type'=>'Blog', 'editable'=>true),
+		array('slug'=>'iletisim', 'title'=>'İletişim', 'url'=>$baseUrl.'/iletisim', 'type'=>'Sayfa', 'editable'=>true)
+	);
+
+	echo '<section class="vox-site-pages-panel">';
+	echo '<div class="vox-site-pages-heading"><div><h2>Vox site sayfaları</h2><p>Hazırladığımız tüm sayfaları buradan görüntüleyebilir ve yönetebilirsiniz.</p></div><span>'.count($sitePages).' sayfa</span></div>';
+	echo '<div class="table-responsive"><table class="table vox-site-pages-table"><thead><tr><th>Sayfa</th><th>Tür</th><th>Durum</th><th class="text-right">İşlemler</th></tr></thead><tbody>';
+	foreach ($sitePages as $sitePage) {
+		$isHome = $sitePage['slug'] === 'home';
+		$isDisabled = !$isHome && in_array($sitePage['slug'], $disabledPages, true);
+		if ($isDisabled) {
+			continue;
+		}
+		$editUrl = $sitePage['url'];
+		if (in_array($sitePage['slug'], array('hakkimizda', 'randevu'), true) && $pages->exists($sitePage['slug'])) {
+			$editUrl = HTML_PATH_ADMIN_ROOT.'edit-content/'.$sitePage['slug'];
+		}
+		echo '<tr>';
+		echo '<td><strong>'.htmlspecialchars($sitePage['title'], ENT_QUOTES, 'UTF-8').'</strong><small>'.htmlspecialchars($sitePage['url'], ENT_QUOTES, 'UTF-8').'</small></td>';
+		echo '<td>'.htmlspecialchars($sitePage['type'], ENT_QUOTES, 'UTF-8').'</td>';
+		echo '<td><span class="vox-page-status is-live">Yayında</span></td>';
+		echo '<td class="text-right vox-site-page-actions"><a class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener" href="'.htmlspecialchars($sitePage['url'], ENT_QUOTES, 'UTF-8').'"><i class="fa fa-external-link mr-1"></i> Görüntüle</a>';
+		if ($sitePage['editable']) {
+			echo '<a class="btn btn-sm btn-outline-primary" href="'.htmlspecialchars($editUrl, ENT_QUOTES, 'UTF-8').'"><i class="fa fa-edit mr-1"></i> Düzenle</a>';
+			echo '<button class="btn btn-sm btn-outline-danger" type="button" data-vox-page-disable="'.htmlspecialchars($sitePage['slug'], ENT_QUOTES, 'UTF-8').'" data-page-title="'.htmlspecialchars($sitePage['title'], ENT_QUOTES, 'UTF-8').'"><i class="fa fa-trash mr-1"></i> Sil</button>';
+		}
+		echo '</td></tr>';
+	}
+	echo '</tbody></table></div>';
+
+	$deletedPages = array_values(array_filter($sitePages, function($sitePage) use ($disabledPages) {
+		return $sitePage['slug'] !== 'home' && in_array($sitePage['slug'], $disabledPages, true);
+	}));
+	if (!empty($deletedPages)) {
+		echo '<details class="vox-deleted-pages"><summary>Silinen sayfalar ('.count($deletedPages).')</summary>';
+		foreach ($deletedPages as $deletedPage) {
+			echo '<div><span><strong>'.htmlspecialchars($deletedPage['title'], ENT_QUOTES, 'UTF-8').'</strong><small>Yayından kaldırıldı</small></span><button class="btn btn-sm btn-outline-success" type="button" data-vox-page-restore="'.htmlspecialchars($deletedPage['slug'], ENT_QUOTES, 'UTF-8').'">Geri yükle</button></div>';
+		}
+		echo '</details>';
+	}
+	echo '</section>';
+}
+
 ?>
+
+<?php voxSitePagesPanel(); ?>
+
+<script>
+$(document).ready(function() {
+	function updateVoxPage(action, slug) {
+		$.ajax({
+			type: 'POST',
+			url: HTML_PATH_ADMIN_ROOT + 'ajax/vox-site-pages',
+			dataType: 'json',
+			data: { tokenCSRF: tokenCSRF, action: action, slug: slug }
+		}).done(function(response) {
+			if (response && response.status === 0) {
+				window.location.reload();
+				return;
+			}
+			alert((response && response.message) ? response.message : 'Sayfa işlemi tamamlanamadı.');
+		}).fail(function() {
+			alert('Sayfa işlemi tamamlanamadı.');
+		});
+	}
+
+	$(document).on('click', '[data-vox-page-disable]', function() {
+		var title = $(this).data('page-title');
+		if (window.confirm(title + ' sayfası yayından kaldırılsın mı? Daha sonra geri yükleyebilirsiniz.')) {
+			updateVoxPage('disable', $(this).data('vox-page-disable'));
+		}
+	});
+	$(document).on('click', '[data-vox-page-restore]', function() {
+		updateVoxPage('restore', $(this).data('vox-page-restore'));
+	});
+});
+</script>
 
 <!-- TABS -->
 <ul class="nav nav-tabs" role="tablist">
