@@ -24,7 +24,7 @@ if (!isset($extensions[$mime])) {
     ajaxResponse(1, 'Yalnızca JPG, PNG, WebP veya GIF yükleyebilirsiniz.');
 }
 
-$directory = PATH_UPLOADS . 'vox-home' . DS;
+$directory = PATH_UPLOADS . 'vox-media' . DS;
 if (!Filesystem::directoryExists($directory) && !Filesystem::mkdir($directory, true)) {
     ajaxResponse(1, 'Görsel klasörü oluşturulamadı.');
 }
@@ -34,4 +34,4 @@ if (!move_uploaded_file($upload['tmp_name'], $directory . $filename)) {
     ajaxResponse(1, 'Görsel yüklenemedi.');
 }
 
-ajaxResponse(0, 'Görsel yüklendi.', array('url' => DOMAIN_UPLOADS . 'vox-home/' . $filename));
+ajaxResponse(0, 'Görsel yüklendi.', array('url' => DOMAIN_UPLOADS . 'vox-media/' . $filename));

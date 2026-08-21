@@ -29,3 +29,40 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.vox-media-upload-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(280px, 1.3fr) auto;
+  align-items: center;
+  gap: 22px;
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #dfe6df;
+  border-radius: 14px;
+  background: #fff;
+}
+.vox-media-upload-card h3 { margin: 0 0 5px; font-size: 19px; }
+.vox-media-upload-card p { margin: 0; color: #68736b; font-size: 13px; }
+.vox-media-file-picker { display: flex; align-items: center; gap: 12px; margin: 0; padding: 15px; border: 2px dashed #b9c8bb; border-radius: 11px; background: #f6faf5; cursor: pointer; }
+.vox-media-file-picker>.fa { color: #168345; font-size: 27px; }
+.vox-media-file-picker strong,.vox-media-file-picker small { display: block; }
+.vox-media-file-picker small { color: #7d887f; font-weight: 400; }
+.vox-media-file-picker input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.vox-media-status { grid-column: 1/-1; min-height: 18px; color: #16713d!important; font-weight: 600; }
+.vox-media-toolbar { display: flex; align-items: center; justify-content: space-between; margin: 28px 0 16px; }
+.vox-media-toolbar>div { display: flex; align-items: baseline; gap: 10px; }
+.vox-media-toolbar span { color: #7a857c; font-size: 13px; }
+.vox-media-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+.vox-media-item { min-width: 0; overflow: hidden; border: 1px solid #dfe6df; border-radius: 12px; background: #fff; }
+.vox-media-item>a { display: block; height: 170px; background: #edf2ed; }
+.vox-media-item img { width: 100%; height: 100%; object-fit: cover; }
+.vox-media-item-info { display: flex; justify-content: space-between; gap: 8px; padding: 12px 12px 7px; }
+.vox-media-item-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.vox-media-item-info small { flex: 0 0 auto; color: #849087; }
+.vox-media-item-actions { display: flex; gap: 7px; padding: 7px 12px 12px; }
+.vox-media-item-actions .btn-light { flex: 1; }
+.vox-media-empty { padding: 65px 20px; border: 2px dashed #dbe4dc; border-radius: 14px; text-align: center; color: #748078; }
+.vox-media-empty>.fa { margin-bottom: 12px; font-size: 45px; }
+@media(max-width:1100px){.vox-media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.vox-media-upload-card{grid-template-columns:1fr 1fr}.vox-media-upload-card>.btn{grid-column:1/-1}}
+@media(max-width:760px){.vox-media-upload-card{grid-template-columns:1fr}.vox-media-upload-card>.btn{grid-column:auto}.vox-media-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.vox-media-grid{grid-template-columns:1fr}}
