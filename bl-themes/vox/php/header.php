@@ -111,7 +111,11 @@ if (!empty($voxAdminLoggedIn)) {
             <?php if ($voxPageIsEnabled('blog')): ?><a href="<?php echo $blogUrl; ?>">Blog</a><?php endif; ?>
             <?php if ($voxPageIsEnabled('iletisim')): ?><a href="<?php echo $contactUrl; ?>">İletişim</a><?php endif; ?>
         </nav>
-        <?php if ($voxPageIsEnabled('randevu')): ?><a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a><?php endif; ?>
+        <?php if ($viewSlug === 'randevu'): ?>
+        <a href="<?php echo $homeUrl; ?>" class="button nav-appointment nav-home" aria-label="Ana sayfaya dön" title="Ana sayfaya dön">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5h-5.7v-6.3H9.2V21H3.5a.5.5 0 0 1-.5-.5v-9.7Z"/><path d="m1.7 11.1 10-8.7a.5.5 0 0 1 .6 0l10 8.7"/></svg>
+        </a>
+        <?php elseif ($voxPageIsEnabled('randevu')): ?><a href="<?php echo $appointmentUrl; ?>" class="button nav-appointment">Randevu Al <b class="arrow">→</b></a><?php endif; ?>
     </div>
 </header>
 <main id="main-content">

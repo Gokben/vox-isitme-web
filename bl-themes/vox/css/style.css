@@ -83,3 +83,4 @@ footer{padding:62px 0 22px;color:#e1f0df;background:var(--deep)}.footer-grid{dis
 @media(max-width:540px){.contact-section{padding:55px 0}.contact-branch-info{padding:32px 24px}.contact-form-section{padding:60px 0}.contact-form{padding:22px 18px}.contact-form-grid{grid-template-columns:1fr}.contact-form-grid .full{grid-column:auto}}
 
 .vox-editable-photo{min-height:450px;border-radius:20px;background-position:center;background-size:cover}
+.nav-home{width:48px;height:48px;padding:0}.nav-home svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
