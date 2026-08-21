@@ -11,6 +11,33 @@ if (!preg_match('~^[a-zA-Z0-9/_-]{1,200}$~', $pageKey)) {
     ajaxResponse(1, 'Geçersiz sayfa.');
 }
 
+if ($action === 'save-home') {
+    $allowedHomeFields = array(
+        'hero_eyebrow', 'hero_title', 'hero_description', 'services_kicker', 'services_title',
+        'service_1_title', 'service_1_text', 'service_2_title', 'service_2_text',
+        'service_3_title', 'service_3_text', 'service_4_title', 'service_4_text',
+        'impact_kicker', 'impact_title', 'about_kicker', 'about_title', 'about_text',
+        'why_kicker', 'why_title', 'why_1_title', 'why_1_text', 'why_2_title',
+        'why_2_text', 'why_3_title', 'why_3_text', 'cta_title', 'cta_text'
+    );
+    $postedFields = isset($_POST['fields']) ? json_decode((string)$_POST['fields'], true) : null;
+    if ($pageKey !== 'home' || !is_array($postedFields)) {
+        ajaxResponse(1, 'Geçersiz ana sayfa verisi.');
+    }
+    $homeContent = array();
+    foreach ($allowedHomeFields as $field) {
+        if (isset($postedFields[$field])) {
+            $value = trim(strip_tags((string)$postedFields[$field]));
+            $homeContent[$field] = mb_substr($value, 0, 3000);
+        }
+    }
+    $homeJson = json_encode($homeContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    if ($homeJson === false || file_put_contents(PATH_DATABASES . 'vox-home.json', $homeJson, LOCK_EX) === false) {
+        ajaxResponse(1, 'Ana sayfa kaydedilemedi.');
+    }
+    ajaxResponse(0, 'Ana sayfa güncellendi.');
+}
+
 $databaseFile = PATH_DATABASES . 'vox-blocks.json';
 $database = array();
 if (is_file($databaseFile)) {

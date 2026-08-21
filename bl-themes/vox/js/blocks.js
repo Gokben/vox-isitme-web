@@ -12,6 +12,53 @@
   var pageKey = dialog.dataset.pageKey;
   var token = dialog.dataset.token;
 
+  var inlineEditButton = document.querySelector('[data-vox-inline-edit]');
+  var inlineSaveButton = document.querySelector('[data-vox-inline-save]');
+  var inlineCancelButton = document.querySelector('[data-vox-inline-cancel]');
+  var editableFields = Array.prototype.slice.call(document.querySelectorAll('[data-vox-edit-field]'));
+  var originalValues = {};
+
+  function setInlineMode(active) {
+    document.body.classList.toggle('vox-inline-editing', active);
+    editableFields.forEach(function (field) {
+      field.contentEditable = active ? 'true' : 'false';
+      if (active) originalValues[field.dataset.voxEditField] = field.innerText.trim();
+    });
+    if (inlineEditButton) inlineEditButton.hidden = active;
+    if (inlineSaveButton) inlineSaveButton.hidden = !active;
+    if (inlineCancelButton) inlineCancelButton.hidden = !active;
+  }
+
+  if (inlineEditButton && editableFields.length) {
+    inlineEditButton.addEventListener('click', function () { setInlineMode(true); });
+    inlineCancelButton.addEventListener('click', function () {
+      editableFields.forEach(function (field) { field.innerText = originalValues[field.dataset.voxEditField] || ''; });
+      setInlineMode(false);
+    });
+    inlineSaveButton.addEventListener('click', function () {
+      var fields = {};
+      editableFields.forEach(function (field) { fields[field.dataset.voxEditField] = field.innerText.trim(); });
+      var data = new FormData();
+      data.set('action', 'save-home');
+      data.set('pageKey', 'home');
+      data.set('fields', JSON.stringify(fields));
+      data.set('tokenCSRF', token);
+      inlineSaveButton.disabled = true;
+      inlineSaveButton.textContent = 'Kaydediliyor…';
+      fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+          if (Number(result.status) !== 0) throw new Error(result.message || 'Ana sayfa kaydedilemedi.');
+          window.location.reload();
+        })
+        .catch(function (error) {
+          window.alert(error.message || 'Ana sayfa kaydedilemedi.');
+          inlineSaveButton.disabled = false;
+          inlineSaveButton.textContent = 'Değişiklikleri kaydet';
+        });
+    });
+  }
+
   function updateFields() {
     var type = typeSelect.value;
     dialog.querySelector('[data-field="title"]').hidden = type === 'text';

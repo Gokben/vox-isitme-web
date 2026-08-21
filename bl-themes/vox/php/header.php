@@ -32,7 +32,13 @@ if (!empty($voxAdminLoggedIn)) {
     <div class="container vox-edit-bar-inner">
         <span class="vox-edit-status"><b>VOX</b> Düzenleme modu</span>
         <nav aria-label="Hızlı düzenleme">
+            <?php if ($WHERE_AM_I === 'home'): ?>
+            <button class="vox-edit-primary vox-inline-edit-button" type="button" data-vox-inline-edit>Ana sayfayı düzenle</button>
+            <button class="vox-inline-save" type="button" data-vox-inline-save hidden>Değişiklikleri kaydet</button>
+            <button class="vox-inline-cancel" type="button" data-vox-inline-cancel hidden>Vazgeç</button>
+            <?php else: ?>
             <a class="vox-edit-primary" href="<?php echo htmlspecialchars($voxAdminEditUrl, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($voxAdminEditLabel, ENT_QUOTES, 'UTF-8'); ?></a>
+            <?php endif; ?>
             <button class="vox-add-block-button" type="button" data-vox-block-open>+ Blok ekle</button>
             <a href="<?php echo DOMAIN_ADMIN; ?>content">Tüm sayfalar</a>
             <a href="<?php echo DOMAIN_ADMIN; ?>dashboard">Yönetim paneli</a>

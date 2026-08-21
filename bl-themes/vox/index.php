@@ -37,6 +37,19 @@ if (is_file($voxBlocksFile)) {
         $voxBlocks = $voxBlocksDatabase[$voxBlockPageKey];
     }
 }
+
+$voxHomeContent = [];
+$voxHomeContentFile = PATH_DATABASES . 'vox-home.json';
+if (is_file($voxHomeContentFile)) {
+    $voxHomeDecoded = json_decode((string)file_get_contents($voxHomeContentFile), true);
+    if (is_array($voxHomeDecoded)) {
+        $voxHomeContent = $voxHomeDecoded;
+    }
+}
+$voxHomeValue = static function (string $key, string $fallback) use ($voxHomeContent): string {
+    $value = isset($voxHomeContent[$key]) ? trim((string)$voxHomeContent[$key]) : '';
+    return htmlspecialchars($value !== '' ? $value : $fallback, ENT_QUOTES, 'UTF-8');
+};
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
 
