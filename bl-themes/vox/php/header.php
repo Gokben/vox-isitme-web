@@ -45,9 +45,11 @@ if (!empty($voxAdminLoggedIn)) {
             <button class="vox-add-block-button" type="button" data-vox-block-open>+ Blok ekle</button>
             <a href="<?php echo DOMAIN_ADMIN; ?>content">Tüm sayfalar</a>
             <a href="<?php echo DOMAIN_ADMIN; ?>dashboard">Yönetim paneli</a>
+            <button class="vox-exit-edit-mode" type="button" data-vox-exit-edit-mode>Düzenleme modundan çık</button>
         </nav>
     </div>
 </aside>
+<button class="vox-preview-return" type="button" data-vox-return-edit-mode>Düzenlemeye dön</button>
 <dialog class="vox-block-dialog" data-vox-block-dialog data-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-blocks" data-upload-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-home-image" data-page-key="<?php echo htmlspecialchars($voxBlockPageKey, ENT_QUOTES, 'UTF-8'); ?>" data-token="<?php echo htmlspecialchars((string)$security->getTokenCSRF(), ENT_QUOTES, 'UTF-8'); ?>">
     <form method="dialog" class="vox-block-form" data-vox-block-form>
         <div class="vox-block-dialog-head"><div><span>Sayfa oluşturucu</span><h2 data-vox-block-dialog-title>Yeni blok ekle</h2></div><button type="button" aria-label="Kapat" data-vox-block-close>×</button></div>

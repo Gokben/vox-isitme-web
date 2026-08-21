@@ -15,6 +15,30 @@
   var blockDialogTitle = dialog.querySelector('[data-vox-block-dialog-title]');
   var blockSubmitButton = dialog.querySelector('[data-vox-block-submit]');
   var blockImageFile = dialog.querySelector('[data-vox-block-image-file]');
+  var exitEditModeButton = document.querySelector('[data-vox-exit-edit-mode]');
+  var returnEditModeButton = document.querySelector('[data-vox-return-edit-mode]');
+
+  function setAdminPreviewMode(active) {
+    document.body.classList.toggle('vox-admin-preview', active);
+    try {
+      window.sessionStorage.setItem('voxAdminPreviewMode', active ? '1' : '0');
+    } catch (error) {
+      // sessionStorage kullanılamıyorsa görünüm yalnızca bu sayfada uygulanır.
+    }
+  }
+
+  if (exitEditModeButton && returnEditModeButton) {
+    try {
+      if (window.sessionStorage.getItem('voxAdminPreviewMode') === '1') setAdminPreviewMode(true);
+    } catch (error) {
+      // Tarayıcı depolaması kapalı olabilir.
+    }
+    exitEditModeButton.addEventListener('click', function () {
+      if (inlineCancelButton && document.body.classList.contains('vox-inline-editing')) inlineCancelButton.click();
+      setAdminPreviewMode(true);
+    });
+    returnEditModeButton.addEventListener('click', function () { setAdminPreviewMode(false); });
+  }
 
   var inlineEditButton = document.querySelector('[data-vox-inline-edit]');
   var inlineSaveButton = document.querySelector('[data-vox-inline-save]');
