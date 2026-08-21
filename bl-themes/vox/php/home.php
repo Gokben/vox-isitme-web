@@ -17,7 +17,7 @@ $aboutImage = $voxHomeValue('about_image', 'https://images.unsplash.com/photo-15
         <p data-vox-edit-field="hero_description"><?php echo $voxHomeValue('hero_description', $heroDescription); ?></p>
         <div class="hero-actions"><a class="button" href="#hizmetler">Hizmetlerimizi Keşfedin <b class="arrow">→</b></a></div>
     </div>
-    <div class="container hero-stats"><div><strong>25+</strong><span>Yıllık deneyim</span></div><div><strong>10K+</strong><span>Mutlu danışan</span></div></div>
+    <div class="container hero-stats"><div><strong>15+</strong><span>Yıllık deneyim</span></div><div><strong>10K+</strong><span>Mutlu danışan</span></div></div>
 </section>
 
 <section id="hizmetler" class="section container">
@@ -30,10 +30,10 @@ $aboutImage = $voxHomeValue('about_image', 'https://images.unsplash.com/photo-15
     </div>
 </section>
 
-<section class="impact"><div class="container impact-inner"><div><span class="kicker kicker-light" data-vox-edit-field="impact_kicker"><?php echo $voxHomeValue('impact_kicker', 'Vox farkı'); ?></span><h2 data-vox-edit-field="impact_title"><?php echo $voxHomeValue('impact_title', 'Her görüşmede, sizi ve ihtiyaçlarınızı gerçekten dinliyoruz.'); ?></h2></div><div class="metrics"><div><strong>%98</strong><span>Danışan memnuniyeti</span></div><div><strong>10K+</strong><span>Mutlu müşteri</span></div><div><strong>25+</strong><span>Yıllık uzmanlık</span></div><div><strong>5★</strong><span>Özenli hizmet yaklaşımı</span></div></div></div></section>
+<section class="impact"><div class="container impact-inner"><div><span class="kicker kicker-light" data-vox-edit-field="impact_kicker"><?php echo $voxHomeValue('impact_kicker', 'Vox farkı'); ?></span><h2 data-vox-edit-field="impact_title"><?php echo $voxHomeValue('impact_title', 'Her görüşmede, sizi ve ihtiyaçlarınızı gerçekten dinliyoruz.'); ?></h2></div><div class="metrics"><div><strong>%98</strong><span>Danışan memnuniyeti</span></div><div><strong>10K+</strong><span>Mutlu müşteri</span></div><div><strong>15+</strong><span>Yıllık uzmanlık</span></div><div><strong>5★</strong><span>Özenli hizmet yaklaşımı</span></div></div></div></section>
 
 <section id="hakkimizda" class="section container about-preview">
-    <div class="about-photo" style="background-image:url(&quot;<?php echo $aboutImage; ?>&quot;)" data-vox-edit-image="about_image" data-vox-image-url="<?php echo $aboutImage; ?>"><img src="<?php echo DOMAIN_THEME_IMG; ?>hakkimizda-vox-danismanlik.png" alt="Vox İşitme uzmanı danışanına işitme cihazını anlatıyor" loading="lazy"><span><strong>25+</strong> yıllık deneyim</span></div>
+    <div class="about-photo" style="background-image:url(&quot;<?php echo $aboutImage; ?>&quot;)" data-vox-edit-image="about_image" data-vox-image-url="<?php echo $aboutImage; ?>"><img src="<?php echo DOMAIN_THEME_IMG; ?>hakkimizda-vox-danismanlik.png" alt="Vox İşitme uzmanı danışanına işitme cihazını anlatıyor" loading="lazy"><span><strong>15+</strong> yıllık deneyim</span></div>
     <div><span class="kicker" data-vox-edit-field="about_kicker"><?php echo $voxHomeValue('about_kicker', 'Vox İşitme hakkında'); ?></span><h2 data-vox-edit-field="about_title"><?php echo $voxHomeValue('about_title', 'İyi duymak, hayata daha yakın olmaktır.'); ?></h2><p data-vox-edit-field="about_text"><?php echo $voxHomeValue('about_text', 'Vox İşitme Merkezi olarak işitme kaybının hayatın sosyal ve duygusal yönlerini nasıl etkilediğini biliyoruz. Bu nedenle, teknolojiyi samimi ve nitelikli danışmanlıkla bir araya getiriyoruz.'); ?></p><div class="checks"><span>Bireye özel çözümler</span><span>Ücretsiz işitme testi</span><span>Güvenilir teknik servis</span><span>Evde hizmet imkânı</span></div><a class="button" href="<?php echo $aboutUrl; ?>">Vox’u Tanıyın <b class="arrow">→</b></a></div>
 </section>
 
