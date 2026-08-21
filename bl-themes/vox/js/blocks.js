@@ -16,13 +16,55 @@
   var inlineSaveButton = document.querySelector('[data-vox-inline-save]');
   var inlineCancelButton = document.querySelector('[data-vox-inline-cancel]');
   var editableFields = Array.prototype.slice.call(document.querySelectorAll('[data-vox-edit-field]'));
+  var editableImages = Array.prototype.slice.call(document.querySelectorAll('[data-vox-edit-image]'));
   var originalValues = {};
+  var originalImages = {};
+  var selectedImageElement = null;
+  var imageDialog = document.querySelector('[data-vox-image-dialog]');
+  var imageForm = imageDialog ? imageDialog.querySelector('[data-vox-image-form]') : null;
+  var imagePreview = imageDialog ? imageDialog.querySelector('[data-vox-image-preview]') : null;
+  var imageFile = imageDialog ? imageDialog.querySelector('[data-vox-image-file]') : null;
+  var imageUrl = imageDialog ? imageDialog.querySelector('[data-vox-image-url]') : null;
+  var imageStatus = imageDialog ? imageDialog.querySelector('[data-vox-image-status]') : null;
+
+  function setImagePreview(element, url) {
+    element.dataset.voxImageUrl = url;
+    element.style.backgroundImage = 'url("' + url.replace(/["\\]/g, '\\$&') + '")';
+  }
+
+  function openImageEditor(element) {
+    if (!imageDialog) return;
+    selectedImageElement = element;
+    imageUrl.value = element.dataset.voxImageUrl || '';
+    imageFile.value = '';
+    imagePreview.src = imageUrl.value;
+    imageStatus.textContent = '';
+    imageStatus.className = 'vox-block-form-status';
+    imageDialog.showModal();
+  }
 
   function setInlineMode(active) {
     document.body.classList.toggle('vox-inline-editing', active);
     editableFields.forEach(function (field) {
       field.contentEditable = active ? 'true' : 'false';
       if (active) originalValues[field.dataset.voxEditField] = field.innerText.trim();
+    });
+    editableImages.forEach(function (element) {
+      var key = element.dataset.voxEditImage;
+      if (active) {
+        originalImages[key] = element.dataset.voxImageUrl || '';
+        if (!element.querySelector('.vox-image-edit-chip')) {
+          var chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'vox-image-edit-chip';
+          chip.textContent = 'Görseli değiştir';
+          chip.addEventListener('click', function (event) { event.preventDefault(); event.stopPropagation(); openImageEditor(element); });
+          element.appendChild(chip);
+        }
+      } else {
+        var chip = element.querySelector('.vox-image-edit-chip');
+        if (chip) chip.remove();
+      }
     });
     if (inlineEditButton) inlineEditButton.hidden = active;
     if (inlineSaveButton) inlineSaveButton.hidden = !active;
@@ -33,11 +75,13 @@
     inlineEditButton.addEventListener('click', function () { setInlineMode(true); });
     inlineCancelButton.addEventListener('click', function () {
       editableFields.forEach(function (field) { field.innerText = originalValues[field.dataset.voxEditField] || ''; });
+      editableImages.forEach(function (element) { setImagePreview(element, originalImages[element.dataset.voxEditImage] || ''); });
       setInlineMode(false);
     });
     inlineSaveButton.addEventListener('click', function () {
       var fields = {};
       editableFields.forEach(function (field) { fields[field.dataset.voxEditField] = field.innerText.trim(); });
+      editableImages.forEach(function (element) { fields[element.dataset.voxEditImage] = element.dataset.voxImageUrl || ''; });
       var data = new FormData();
       data.set('action', 'save-home');
       data.set('pageKey', 'home');
@@ -56,6 +100,50 @@
           inlineSaveButton.disabled = false;
           inlineSaveButton.textContent = 'Değişiklikleri kaydet';
         });
+    });
+  }
+
+  if (imageDialog && imageForm) {
+    imageDialog.querySelectorAll('[data-vox-image-close]').forEach(function (button) {
+      button.addEventListener('click', function () { imageDialog.close(); });
+    });
+    imageUrl.addEventListener('input', function () { if (imageUrl.value) imagePreview.src = imageUrl.value; });
+    imageFile.addEventListener('change', function () {
+      if (imageFile.files && imageFile.files[0]) imagePreview.src = URL.createObjectURL(imageFile.files[0]);
+    });
+    imageForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      if (!selectedImageElement) return;
+      var submit = imageForm.querySelector('.vox-block-save');
+      var chosenFile = imageFile.files && imageFile.files[0];
+      var typedUrl = imageUrl.value.trim();
+      var finish = function (url) {
+        setImagePreview(selectedImageElement, url);
+        imageDialog.close();
+      };
+
+      if (!chosenFile) {
+        if (!/^(?:https?:\/\/|\/)/i.test(typedUrl)) {
+          imageStatus.textContent = 'Geçerli bir görsel adresi girin veya dosya seçin.';
+          return;
+        }
+        finish(typedUrl);
+        return;
+      }
+
+      var uploadData = new FormData();
+      uploadData.set('image', chosenFile);
+      uploadData.set('tokenCSRF', token);
+      submit.disabled = true;
+      imageStatus.textContent = 'Görsel yükleniyor…';
+      fetch(imageDialog.dataset.uploadEndpoint, { method: 'POST', body: uploadData, credentials: 'same-origin' })
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+          if (Number(result.status) !== 0 || !result.url) throw new Error(result.message || 'Görsel yüklenemedi.');
+          finish(result.url);
+        })
+        .catch(function (error) { imageStatus.textContent = error.message || 'Görsel yüklenemedi.'; })
+        .finally(function () { submit.disabled = false; });
     });
   }
 

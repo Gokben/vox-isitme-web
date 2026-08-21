@@ -57,6 +57,19 @@ if (!empty($voxAdminLoggedIn)) {
         <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-block-close>Vazgeç</button><button type="submit" class="vox-block-save">Bloğu ekle</button></div>
     </form>
 </dialog>
+<?php if ($WHERE_AM_I === 'home'): ?>
+<dialog class="vox-block-dialog vox-image-dialog" data-vox-image-dialog data-upload-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-home-image">
+    <form method="dialog" class="vox-block-form" data-vox-image-form>
+        <div class="vox-block-dialog-head"><div><span>Ana sayfa görseli</span><h2>Görseli değiştir</h2></div><button type="button" aria-label="Kapat" data-vox-image-close>×</button></div>
+        <div class="vox-image-preview"><img src="" alt="Yeni görsel önizlemesi" data-vox-image-preview></div>
+        <label>Bilgisayardan yükle<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" data-vox-image-file></label>
+        <div class="vox-image-or"><span>veya</span></div>
+        <label>Görsel adresi<input name="imageUrl" type="url" maxlength="1000" placeholder="https://..." data-vox-image-url></label>
+        <p class="vox-block-form-status" data-vox-image-status aria-live="polite"></p>
+        <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-image-close>Vazgeç</button><button type="submit" class="vox-block-save">Görseli kullan</button></div>
+    </form>
+</dialog>
+<?php endif; ?>
 <?php endif; ?>
 <a class="skip-link" href="#main-content">İçeriğe geç</a>
 <header class="site-header">

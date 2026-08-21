@@ -20,8 +20,10 @@ if ($action === 'save-home') {
         'why_kicker', 'why_title', 'why_1_title', 'why_1_text', 'why_2_title',
         'why_2_text', 'why_3_title', 'why_3_text', 'hours_kicker', 'hours_title',
         'hours_text', 'hours_card_title', 'hours_weekday', 'hours_saturday',
-        'hours_sunday', 'cta_title', 'cta_text'
+        'hours_sunday', 'cta_title', 'cta_text', 'hero_image', 'service_1_image',
+        'service_2_image', 'service_3_image', 'service_4_image', 'about_image'
     );
+    $homeImageFields = array('hero_image', 'service_1_image', 'service_2_image', 'service_3_image', 'service_4_image', 'about_image');
     $postedFields = isset($_POST['fields']) ? json_decode((string)$_POST['fields'], true) : null;
     if ($pageKey !== 'home' || !is_array($postedFields)) {
         ajaxResponse(1, 'Geçersiz ana sayfa verisi.');
@@ -30,6 +32,9 @@ if ($action === 'save-home') {
     foreach ($allowedHomeFields as $field) {
         if (isset($postedFields[$field])) {
             $value = trim(strip_tags((string)$postedFields[$field]));
+            if (in_array($field, $homeImageFields, true) && !preg_match('~^(?:https?://|/)~i', $value)) {
+                $value = '';
+            }
             $homeContent[$field] = mb_substr($value, 0, 3000);
         }
     }
