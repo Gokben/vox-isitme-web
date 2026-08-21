@@ -45,16 +45,16 @@ if (!empty($voxAdminLoggedIn)) {
         </nav>
     </div>
 </aside>
-<dialog class="vox-block-dialog" data-vox-block-dialog data-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-blocks" data-page-key="<?php echo htmlspecialchars($voxBlockPageKey, ENT_QUOTES, 'UTF-8'); ?>" data-token="<?php echo htmlspecialchars((string)$security->getTokenCSRF(), ENT_QUOTES, 'UTF-8'); ?>">
+<dialog class="vox-block-dialog" data-vox-block-dialog data-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-blocks" data-upload-endpoint="<?php echo DOMAIN_ADMIN; ?>ajax/vox-home-image" data-page-key="<?php echo htmlspecialchars($voxBlockPageKey, ENT_QUOTES, 'UTF-8'); ?>" data-token="<?php echo htmlspecialchars((string)$security->getTokenCSRF(), ENT_QUOTES, 'UTF-8'); ?>">
     <form method="dialog" class="vox-block-form" data-vox-block-form>
-        <div class="vox-block-dialog-head"><div><span>Sayfa oluşturucu</span><h2>Yeni blok ekle</h2></div><button type="button" aria-label="Kapat" data-vox-block-close>×</button></div>
+        <div class="vox-block-dialog-head"><div><span>Sayfa oluşturucu</span><h2 data-vox-block-dialog-title>Yeni blok ekle</h2></div><button type="button" aria-label="Kapat" data-vox-block-close>×</button></div>
         <label>Blok türü<select name="blockType" data-vox-block-type><option value="heading">Başlık</option><option value="text">Metin</option><option value="image">Görsel</option><option value="cta">Çağrı / buton alanı</option></select></label>
         <label data-field="title">Başlık<input name="title" type="text" maxlength="160" placeholder="Blok başlığı"></label>
         <label data-field="text">Metin<textarea name="text" rows="5" maxlength="3000" placeholder="İçeriğinizi yazın"></textarea></label>
-        <label data-field="image">Görsel adresi<input name="imageUrl" type="url" maxlength="1000" placeholder="https://..."></label>
+        <div data-field="image"><label>Bilgisayardan görsel yükle<input name="blockImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" data-vox-block-image-file></label><div class="vox-image-or"><span>veya</span></div><label>Görsel adresi<input name="imageUrl" type="url" maxlength="1000" placeholder="https://..."></label></div>
         <div class="vox-block-fields-row" data-field="button"><label>Buton yazısı<input name="buttonLabel" type="text" maxlength="80" placeholder="Detaylı bilgi"></label><label>Buton bağlantısı<input name="buttonUrl" type="text" maxlength="1000" placeholder="/randevu"></label></div>
         <p class="vox-block-form-status" data-vox-block-status aria-live="polite"></p>
-        <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-block-close>Vazgeç</button><button type="submit" class="vox-block-save">Bloğu ekle</button></div>
+        <div class="vox-block-form-actions"><button type="button" class="vox-block-cancel" data-vox-block-close>Vazgeç</button><button type="submit" class="vox-block-save" data-vox-block-submit>Bloğu ekle</button></div>
     </form>
 </dialog>
 <?php if ($WHERE_AM_I === 'home'): ?>

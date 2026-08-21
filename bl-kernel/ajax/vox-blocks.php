@@ -57,7 +57,7 @@ if (!isset($database[$pageKey]) || !is_array($database[$pageKey])) {
     $database[$pageKey] = array();
 }
 
-if ($action === 'add') {
+if ($action === 'add' || $action === 'update') {
     $type = isset($_POST['blockType']) ? (string)$_POST['blockType'] : '';
     if (!in_array($type, $allowedTypes, true)) {
         ajaxResponse(1, 'Geçersiz blok türü.');
@@ -78,8 +78,12 @@ if ($action === 'add') {
         return '';
     };
 
+    $blockId = $action === 'update' && isset($_POST['blockId']) ? (string)$_POST['blockId'] : bin2hex(random_bytes(8));
+    if (!preg_match('~^[a-f0-9]{16}$~', $blockId)) {
+        ajaxResponse(1, 'Geçersiz blok.');
+    }
     $block = array(
-        'id' => bin2hex(random_bytes(8)),
+        'id' => $blockId,
         'type' => $type,
         'title' => $clean('title', 160),
         'text' => $clean('text', 3000),
@@ -91,7 +95,21 @@ if ($action === 'add') {
     if (($type === 'heading' && $block['title'] === '') || ($type === 'text' && $block['text'] === '') || ($type === 'image' && $block['imageUrl'] === '')) {
         ajaxResponse(1, 'Lütfen blok için gerekli alanları doldurun.');
     }
-    $database[$pageKey][] = $block;
+    if ($action === 'update') {
+        $updated = false;
+        foreach ($database[$pageKey] as $index => $existingBlock) {
+            if (is_array($existingBlock) && isset($existingBlock['id']) && hash_equals((string)$existingBlock['id'], $blockId)) {
+                $database[$pageKey][$index] = $block;
+                $updated = true;
+                break;
+            }
+        }
+        if (!$updated) {
+            ajaxResponse(1, 'Düzenlenecek blok bulunamadı.');
+        }
+    } else {
+        $database[$pageKey][] = $block;
+    }
 } elseif ($action === 'delete') {
     $blockId = isset($_POST['blockId']) ? (string)$_POST['blockId'] : '';
     $database[$pageKey] = array_values(array_filter($database[$pageKey], static function ($block) use ($blockId) {
@@ -106,4 +124,4 @@ if ($json === false || file_put_contents($databaseFile, $json, LOCK_EX) === fals
     ajaxResponse(1, 'Bloklar kaydedilemedi.');
 }
 
-ajaxResponse(0, $action === 'delete' ? 'Blok silindi.' : 'Blok eklendi.');
+ajaxResponse(0, $action === 'delete' ? 'Blok silindi.' : ($action === 'update' ? 'Blok güncellendi.' : 'Blok eklendi.'));

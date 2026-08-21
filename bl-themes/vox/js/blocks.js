@@ -11,6 +11,10 @@
   var endpoint = dialog.dataset.endpoint;
   var pageKey = dialog.dataset.pageKey;
   var token = dialog.dataset.token;
+  var editingBlockId = '';
+  var blockDialogTitle = dialog.querySelector('[data-vox-block-dialog-title]');
+  var blockSubmitButton = dialog.querySelector('[data-vox-block-submit]');
+  var blockImageFile = dialog.querySelector('[data-vox-block-image-file]');
 
   var inlineEditButton = document.querySelector('[data-vox-inline-edit]');
   var inlineSaveButton = document.querySelector('[data-vox-inline-save]');
@@ -155,11 +159,41 @@
     dialog.querySelector('[data-field="button"]').hidden = type !== 'cta';
   }
 
-  openButton.addEventListener('click', function () {
+  function openBlockEditor(values) {
+    form.reset();
+    editingBlockId = values ? values.id : '';
+    blockDialogTitle.textContent = values ? 'Bloğu düzenle' : 'Yeni blok ekle';
+    blockSubmitButton.textContent = values ? 'Değişiklikleri kaydet' : 'Bloğu ekle';
+    if (values) {
+      typeSelect.value = values.type || 'text';
+      form.elements.title.value = values.title || '';
+      form.elements.text.value = values.text || '';
+      form.elements.imageUrl.value = values.imageUrl || '';
+      form.elements.buttonLabel.value = values.buttonLabel || '';
+      form.elements.buttonUrl.value = values.buttonUrl || '';
+    }
     status.textContent = '';
     status.className = 'vox-block-form-status';
     updateFields();
     dialog.showModal();
+  }
+
+  openButton.addEventListener('click', function () {
+    openBlockEditor(null);
+  });
+
+  document.querySelectorAll('[data-vox-block-edit]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      openBlockEditor({
+        id: button.dataset.voxBlockEdit,
+        type: button.dataset.blockType,
+        title: button.dataset.blockTitle,
+        text: button.dataset.blockText,
+        imageUrl: button.dataset.blockImageUrl,
+        buttonLabel: button.dataset.blockButtonLabel,
+        buttonUrl: button.dataset.blockButtonUrl
+      });
+    });
   });
 
   dialog.querySelectorAll('[data-vox-block-close]').forEach(function (button) {
@@ -171,22 +205,42 @@
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     var submit = form.querySelector('.vox-block-save');
-    var data = new FormData(form);
-    data.set('action', 'add');
-    data.set('pageKey', pageKey);
-    data.set('tokenCSRF', token);
     submit.disabled = true;
-    status.textContent = 'Blok kaydediliyor…';
+    status.textContent = editingBlockId ? 'Blok güncelleniyor…' : 'Blok kaydediliyor…';
 
-    fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
+    var saveBlock = function () {
+      var data = new FormData(form);
+      data.delete('blockImage');
+      data.set('action', editingBlockId ? 'update' : 'add');
+      data.set('pageKey', pageKey);
+      data.set('blockId', editingBlockId);
+      data.set('tokenCSRF', token);
+      return fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' });
+    };
+
+    var uploadPromise = Promise.resolve(null);
+    if (typeSelect.value === 'image' && blockImageFile.files && blockImageFile.files[0]) {
+      var uploadData = new FormData();
+      uploadData.set('image', blockImageFile.files[0]);
+      uploadData.set('tokenCSRF', token);
+      status.textContent = 'Görsel yükleniyor…';
+      uploadPromise = fetch(dialog.dataset.uploadEndpoint, { method: 'POST', body: uploadData, credentials: 'same-origin' })
+        .then(function (response) { return response.json(); })
+        .then(function (result) {
+          if (Number(result.status) !== 0 || !result.url) throw new Error(result.message || 'Görsel yüklenemedi.');
+          form.elements.imageUrl.value = result.url;
+        });
+    }
+
+    uploadPromise.then(saveBlock)
       .then(function (response) { return response.json(); })
       .then(function (result) {
-        if (Number(result.status) !== 0) throw new Error(result.message || 'Blok eklenemedi.');
+        if (Number(result.status) !== 0) throw new Error(result.message || 'Blok kaydedilemedi.');
         status.className = 'vox-block-form-status success';
-        status.textContent = 'Blok eklendi. Sayfa yenileniyor…';
+        status.textContent = (editingBlockId ? 'Blok güncellendi.' : 'Blok eklendi.') + ' Sayfa yenileniyor…';
         window.location.reload();
       })
-      .catch(function (error) { status.textContent = error.message || 'Blok eklenemedi.'; })
+      .catch(function (error) { status.textContent = error.message || 'Blok kaydedilemedi.'; })
       .finally(function () { submit.disabled = false; });
   });
 

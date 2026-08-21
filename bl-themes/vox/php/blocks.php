@@ -14,7 +14,7 @@ $safeText = static fn ($value): string => htmlspecialchars((string)$value, ENT_Q
             $type = (string)$block['type'];
         ?>
         <article class="vox-content-block vox-block-<?php echo $safeText($type); ?>" data-vox-block-id="<?php echo $safeText($block['id']); ?>">
-            <?php if (!empty($voxAdminLoggedIn)): ?><button class="vox-block-delete" type="button" data-vox-block-delete="<?php echo $safeText($block['id']); ?>">Bloğu sil</button><?php endif; ?>
+            <?php if (!empty($voxAdminLoggedIn)): ?><div class="vox-block-admin-actions"><button class="vox-block-edit" type="button" data-vox-block-edit="<?php echo $safeText($block['id']); ?>" data-block-type="<?php echo $safeText($type); ?>" data-block-title="<?php echo $safeText($block['title'] ?? ''); ?>" data-block-text="<?php echo $safeText($block['text'] ?? ''); ?>" data-block-image-url="<?php echo $safeText($block['imageUrl'] ?? ''); ?>" data-block-button-label="<?php echo $safeText($block['buttonLabel'] ?? ''); ?>" data-block-button-url="<?php echo $safeText($block['buttonUrl'] ?? ''); ?>">Bloğu düzenle</button><button class="vox-block-delete" type="button" data-vox-block-delete="<?php echo $safeText($block['id']); ?>">Bloğu sil</button></div><?php endif; ?>
             <?php if ($type === 'heading'): ?>
                 <h2><?php echo $safeText($block['title'] ?? ''); ?></h2>
             <?php elseif ($type === 'text'): ?>
