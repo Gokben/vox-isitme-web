@@ -111,8 +111,8 @@
       editableFields.forEach(function (field) { fields[field.dataset.voxEditField] = field.innerText.trim(); });
       editableImages.forEach(function (element) { fields[element.dataset.voxEditImage] = element.dataset.voxImageUrl || ''; });
       var data = new FormData();
-      data.set('action', 'save-home');
-      data.set('pageKey', 'home');
+      data.set('action', pageKey === 'home' ? 'save-home' : 'save-page');
+      data.set('pageKey', pageKey);
       data.set('fields', JSON.stringify(fields));
       data.set('tokenCSRF', token);
       inlineSaveButton.disabled = true;
@@ -120,11 +120,11 @@
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (response) { return response.json(); })
         .then(function (result) {
-          if (Number(result.status) !== 0) throw new Error(result.message || 'Ana sayfa kaydedilemedi.');
+          if (Number(result.status) !== 0) throw new Error(result.message || 'Sayfa kaydedilemedi.');
           window.location.reload();
         })
         .catch(function (error) {
-          window.alert(error.message || 'Ana sayfa kaydedilemedi.');
+          window.alert(error.message || 'Sayfa kaydedilemedi.');
           inlineSaveButton.disabled = false;
           inlineSaveButton.textContent = 'Değişiklikleri kaydet';
         });

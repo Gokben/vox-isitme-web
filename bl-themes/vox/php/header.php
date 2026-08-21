@@ -35,8 +35,8 @@ if (!empty($voxAdminLoggedIn)) {
     <div class="container vox-edit-bar-inner">
         <span class="vox-edit-status"><b>VOX</b> Düzenleme modu</span>
         <nav aria-label="Hızlı düzenleme">
-            <?php if ($WHERE_AM_I === 'home'): ?>
-            <button class="vox-edit-primary vox-inline-edit-button" type="button" data-vox-inline-edit>Ana sayfayı düzenle</button>
+            <?php if ($WHERE_AM_I === 'home' || $viewSlug === 'hakkimizda'): ?>
+            <button class="vox-edit-primary vox-inline-edit-button" type="button" data-vox-inline-edit><?php echo $viewSlug === 'hakkimizda' ? 'Hakkımızda sayfasını düzenle' : 'Ana sayfayı düzenle'; ?></button>
             <button class="vox-inline-save" type="button" data-vox-inline-save hidden>Değişiklikleri kaydet</button>
             <button class="vox-inline-cancel" type="button" data-vox-inline-cancel hidden>Vazgeç</button>
             <?php elseif (!empty($isBlogRoute)): ?>

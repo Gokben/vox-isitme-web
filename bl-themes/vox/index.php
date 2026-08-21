@@ -181,6 +181,18 @@ $voxHomeValue = static function (string $key, string $fallback) use ($voxHomeCon
     $value = isset($voxHomeContent[$key]) ? trim((string)$voxHomeContent[$key]) : '';
     return htmlspecialchars($value !== '' ? $value : $fallback, ENT_QUOTES, 'UTF-8');
 };
+$voxAboutContent = [];
+$voxAboutContentFile = PATH_DATABASES . 'vox-about.json';
+if (is_file($voxAboutContentFile)) {
+    $voxAboutDecoded = json_decode((string)file_get_contents($voxAboutContentFile), true);
+    if (is_array($voxAboutDecoded)) {
+        $voxAboutContent = $voxAboutDecoded;
+    }
+}
+$voxAboutValue = static function (string $key, string $fallback) use ($voxAboutContent): string {
+    $value = isset($voxAboutContent[$key]) ? trim((string)$voxAboutContent[$key]) : '';
+    return htmlspecialchars($value !== '' ? $value : $fallback, ENT_QUOTES, 'UTF-8');
+};
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
 

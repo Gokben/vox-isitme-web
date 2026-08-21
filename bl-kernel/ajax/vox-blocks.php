@@ -45,6 +45,37 @@ if ($action === 'save-home') {
     ajaxResponse(0, 'Ana sayfa güncellendi.');
 }
 
+if ($action === 'save-page' && $pageKey === 'hakkimizda') {
+    $allowedAboutFields = array(
+        'hero_kicker', 'hero_title', 'hero_description', 'story_kicker', 'story_title',
+        'story_text', 'story_image', 'story_badge_title', 'story_badge_text',
+        'approach_kicker', 'approach_title', 'approach_1_title', 'approach_1_text',
+        'approach_2_title', 'approach_2_text', 'approach_3_title', 'approach_3_text',
+        'trust_kicker', 'trust_title', 'trust_text_1', 'trust_text_2', 'trust_image',
+        'cta_title', 'cta_text'
+    );
+    $aboutImageFields = array('story_image', 'trust_image');
+    $postedFields = isset($_POST['fields']) ? json_decode((string)$_POST['fields'], true) : null;
+    if (!is_array($postedFields)) {
+        ajaxResponse(1, 'Geçersiz Hakkımızda sayfası verisi.');
+    }
+    $aboutContent = array();
+    foreach ($allowedAboutFields as $field) {
+        if (isset($postedFields[$field])) {
+            $value = trim(strip_tags((string)$postedFields[$field]));
+            if (in_array($field, $aboutImageFields, true) && !preg_match('~^(?:https?://|/)~i', $value)) {
+                $value = '';
+            }
+            $aboutContent[$field] = mb_substr($value, 0, 5000);
+        }
+    }
+    $aboutJson = json_encode($aboutContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    if ($aboutJson === false || file_put_contents(PATH_DATABASES . 'vox-about.json', $aboutJson, LOCK_EX) === false) {
+        ajaxResponse(1, 'Hakkımızda sayfası kaydedilemedi.');
+    }
+    ajaxResponse(0, 'Hakkımızda sayfası güncellendi.');
+}
+
 $databaseFile = PATH_DATABASES . 'vox-blocks.json';
 $database = array();
 if (is_file($databaseFile)) {
