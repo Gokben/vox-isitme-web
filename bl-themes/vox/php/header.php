@@ -59,12 +59,6 @@ if (!empty($voxAdminLoggedIn)) {
 </dialog>
 <?php endif; ?>
 <a class="skip-link" href="#main-content">İçeriğe geç</a>
-<div class="topbar">
-    <div class="container topbar-inner">
-        <div class="topbar-group"><span>◷ Pazartesi–Cumartesi: 09:00–18:00</span><a href="tel:+905011438043">☎ Sefaköy: +90 501 143 80 43</a></div>
-        <div class="topbar-group"><a href="mailto:bilgi@voxisitme.com">✉ bilgi@voxisitme.com</a><span>TR / EN</span></div>
-    </div>
-</div>
 <header class="site-header">
     <div class="container nav">
         <a class="brand site-brand" href="<?php echo $homeUrl; ?>" aria-label="Vox İşitme ana sayfa">

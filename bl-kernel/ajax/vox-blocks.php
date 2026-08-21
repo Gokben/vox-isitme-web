@@ -18,7 +18,9 @@ if ($action === 'save-home') {
         'service_3_title', 'service_3_text', 'service_4_title', 'service_4_text',
         'impact_kicker', 'impact_title', 'about_kicker', 'about_title', 'about_text',
         'why_kicker', 'why_title', 'why_1_title', 'why_1_text', 'why_2_title',
-        'why_2_text', 'why_3_title', 'why_3_text', 'cta_title', 'cta_text'
+        'why_2_text', 'why_3_title', 'why_3_text', 'hours_kicker', 'hours_title',
+        'hours_text', 'hours_card_title', 'hours_weekday', 'hours_saturday',
+        'hours_sunday', 'cta_title', 'cta_text'
     );
     $postedFields = isset($_POST['fields']) ? json_decode((string)$_POST['fields'], true) : null;
     if ($pageKey !== 'home' || !is_array($postedFields)) {
