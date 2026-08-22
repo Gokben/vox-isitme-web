@@ -565,8 +565,17 @@ body.login {
 	background: var(--bg-card);
 }
 
+.turkey-cities-chart-wrap {
+	position: relative;
+	height: 320px;
+	max-height: 320px;
+	overflow: hidden;
+}
+
 #turkey-cities-chart {
-	min-height: 260px;
+	display: block;
+	width: 100% !important;
+	height: 100% !important;
 }
 
 #dashboard .analytics-section ul.list-group.list-group-striped {
