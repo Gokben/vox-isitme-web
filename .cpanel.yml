@@ -7,4 +7,4 @@ deployment:
     - /bin/rm -rf "$DEPLOYPATH/bl-kernel" "$DEPLOYPATH/bl-languages" "$DEPLOYPATH/bl-plugins" "$DEPLOYPATH/bl-themes"
     - /bin/mkdir -p "$DEPLOYPATH/bl-content"
     - /bin/cp -R bl-kernel bl-languages bl-plugins bl-themes "$DEPLOYPATH"
-    - /bin/cp .htaccess index.php install.php BLUDIT-LICENSE README.md "$DEPLOYPATH"
+    - /bin/cp .htaccess index.php install.php sitemap.php robots.txt BLUDIT-LICENSE README.md "$DEPLOYPATH"

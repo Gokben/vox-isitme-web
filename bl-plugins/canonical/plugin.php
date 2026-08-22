@@ -4,6 +4,13 @@ class pluginCanonical extends Plugin {
 
 	public function siteHead()
 	{
+		global $site;
+		// Vox teması; özel rotalar ve blog yazıları için kendi kanonik URL'sini
+		// üretir. Aynı sayfada iki canonical etiketi oluşmasını engelle.
+		if ($site->theme() === 'vox') {
+			return '';
+		}
+
 		global $url;
 		global $page;
 		global $WHERE_AM_I;
