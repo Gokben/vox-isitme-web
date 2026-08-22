@@ -218,7 +218,7 @@ $turnstileSiteKey = trim((string)(getenv('VOX_TURNSTILE_SITE_KEY') ?: ($turnstil
 $turnstileSecretKey = trim((string)(getenv('VOX_TURNSTILE_SECRET_KEY') ?: ($turnstileConfig['secretKey'] ?? '')));
 $turnstileEnabled = $turnstileSiteKey !== '' && $turnstileSecretKey !== '';
 $turnstileExpectedHostname = strtolower((string)(parse_url($baseUrl, PHP_URL_HOST) ?: 'voxisitme.com'));
-$validateTurnstile = static function (string $token) use ($turnstileSecretKey, $turnstileExpectedHostname): bool {
+$validateTurnstile = static function (string $token, string $expectedAction) use ($turnstileSecretKey, $turnstileExpectedHostname): bool {
     $token = trim($token);
     if ($token === '' || strlen($token) > 2048) {
         return false;
@@ -272,7 +272,7 @@ $validateTurnstile = static function (string $token) use ($turnstileSecretKey, $
     if (!is_array($verification) || ($verification['success'] ?? false) !== true) {
         return false;
     }
-    if (($verification['action'] ?? '') !== 'contact') {
+    if (!hash_equals($expectedAction, (string)($verification['action'] ?? ''))) {
         return false;
     }
     return hash_equals($turnstileExpectedHostname, strtolower((string)($verification['hostname'] ?? '')));
@@ -301,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isContactRoute && isset($_POST['vo
         if (time() - $lastContactRequest < 45) {
             $errors[] = 'Yeni bir mesaj göndermeden önce lütfen kısa bir süre bekleyin.';
         }
-        if ($turnstileEnabled && !$validateTurnstile((string)($_POST['cf-turnstile-response'] ?? ''))) {
+        if ($turnstileEnabled && !$validateTurnstile((string)($_POST['cf-turnstile-response'] ?? ''), 'contact')) {
             $errors[] = 'Güvenlik doğrulaması tamamlanamadı. Lütfen tekrar deneyin.';
         }
 
@@ -401,6 +401,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_appointment'])) {
         }
         if (time() - $lastRequest < 30) {
             $errors[] = 'Yeni bir talep göndermeden önce lütfen kısa bir süre bekleyin.';
+        }
+        if ($turnstileEnabled && !$validateTurnstile((string)($_POST['cf-turnstile-response'] ?? ''), 'appointment')) {
+            $errors[] = 'Güvenlik doğrulaması tamamlanamadı. Lütfen tekrar deneyin.';
         }
 
         $name = $appointmentValues['name'] ?? '';

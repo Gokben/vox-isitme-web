@@ -28,9 +28,13 @@
                     <div><label class="field-label" for="email">E-posta</label><input class="control" id="email" name="email" type="email" autocomplete="email" maxlength="160" placeholder="ornek@email.com" value="<?php echo htmlspecialchars($appointmentValues['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></div>
                     <div class="full"><label class="field-label" for="note">Not <span style="font-weight:400">(isteğe bağlı)</span></label><textarea class="control" id="note" name="note" maxlength="1000" placeholder="Randevu ile ilgili eklemek istediğiniz bir şey varsa..."><?php echo htmlspecialchars($appointmentValues['note'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea></div>
                     <label class="full consent"><input type="checkbox" name="consent" value="1" required><span>Kişisel verilerimin randevu talebimin değerlendirilmesi amacıyla işlenmesini kabul ediyorum.</span></label>
+                    <?php if ($turnstileEnabled): ?>
+                    <div class="full appointment-turnstile"><div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($turnstileSiteKey, ENT_QUOTES, 'UTF-8'); ?>" data-action="appointment" data-theme="light"></div></div>
+                    <?php endif; ?>
                     <div id="status" class="full status<?php echo $appointmentState['message'] !== '' ? ' visible ' . $appointmentState['type'] : ''; ?>" role="status"><?php echo htmlspecialchars($appointmentState['message'], ENT_QUOTES, 'UTF-8'); ?></div>
                     <button class="full button submit" type="submit">Randevu Talebi Oluştur <b class="arrow">→</b></button>
             </form>
         </div>
     </div>
 </div>
+<?php if ($turnstileEnabled): ?><script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script><?php endif; ?>
