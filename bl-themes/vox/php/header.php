@@ -1,6 +1,6 @@
 <?php
-$viewSlug = !empty($isBlogRoute) ? 'blog' : (!empty($isContactRoute) ? 'iletisim' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : ''));
-$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : ($viewSlug === 'iletisim' ? 'is-contact' : 'is-inner')));
+$viewSlug = !empty($isBlogRoute) ? 'blog' : (!empty($isDevicesRoute) ? 'cihazlar' : (!empty($isContactRoute) ? 'iletisim' : (($WHERE_AM_I === 'page' && isset($page) && method_exists($page, 'slug')) ? $page->slug() : '')));
+$bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is-appointment' : ($viewSlug === 'blog' ? 'is-blog' : ($viewSlug === 'cihazlar' ? 'is-devices' : ($viewSlug === 'iletisim' ? 'is-contact' : 'is-inner'))));
 if (!empty($voxAdminLoggedIn)) {
     $bodyClass .= ' has-vox-edit-bar';
 }
@@ -14,6 +14,9 @@ if (!empty($voxAdminLoggedIn)) {
     <?php if (!empty($isBlogRoute)): ?>
     <title>Blog Yazıları | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
     <meta name="description" content="İşitme sağlığı, cihaz teknolojileri ve günlük yaşam için Vox İşitme uzmanlarından yararlı bilgiler.">
+    <?php elseif (!empty($isDevicesRoute)): ?>
+    <title>Cihaz Kullanım Rehberi | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="İşitme cihazınızı takma, temizleme, şarj etme ve günlük kullanımla ilgili pratik bilgiler.">
     <?php elseif (!empty($isContactRoute)): ?>
     <title>İletişim | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
     <meta name="description" content="Vox İşitme Sefaköy ve Bahçeşehir şubelerinin adres, telefon ve harita bilgileri.">
@@ -107,7 +110,7 @@ if (!empty($voxAdminLoggedIn)) {
         <nav id="main-navigation" class="main-nav" aria-label="Ana menü">
             <a href="<?php echo $homeUrl; ?>">Ana Sayfa</a>
             <?php if ($voxPageIsEnabled('hakkimizda')): ?><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a><?php endif; ?>
-            <a href="<?php echo $homeUrl; ?>#galeri">Galeri</a>
+            <?php if ($voxPageIsEnabled('cihazlar')): ?><a href="<?php echo $devicesUrl; ?>">Cihazlar</a><?php endif; ?>
             <?php if ($voxPageIsEnabled('blog')): ?><a href="<?php echo $blogUrl; ?>">Blog</a><?php endif; ?>
             <?php if ($voxPageIsEnabled('iletisim')): ?><a href="<?php echo $contactUrl; ?>">İletişim</a><?php endif; ?>
         </nav>

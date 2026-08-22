@@ -8,7 +8,7 @@
             </a>
             <p>Daha iyi duymanız ve hayata daha yakından katılmanız için yanınızdayız.</p>
         </div>
-        <div><h4>Menü</h4><ul><li><a href="<?php echo $homeUrl; ?>">Ana Sayfa</a></li><?php if ($voxPageIsEnabled('hakkimizda')): ?><li><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a></li><?php endif; ?><li><a href="<?php echo $homeUrl; ?>#galeri">Galeri</a></li><?php if ($voxPageIsEnabled('blog')): ?><li><a href="<?php echo $blogUrl; ?>">Blog</a></li><?php endif; ?><?php if ($voxPageIsEnabled('iletisim')): ?><li><a href="<?php echo $contactUrl; ?>">İletişim</a></li><?php endif; ?></ul></div>
+        <div><h4>Menü</h4><ul><li><a href="<?php echo $homeUrl; ?>">Ana Sayfa</a></li><?php if ($voxPageIsEnabled('hakkimizda')): ?><li><a href="<?php echo $aboutUrl; ?>">Hakkımızda</a></li><?php endif; ?><?php if ($voxPageIsEnabled('cihazlar')): ?><li><a href="<?php echo $devicesUrl; ?>">Cihazlar</a></li><?php endif; ?><?php if ($voxPageIsEnabled('blog')): ?><li><a href="<?php echo $blogUrl; ?>">Blog</a></li><?php endif; ?><?php if ($voxPageIsEnabled('iletisim')): ?><li><a href="<?php echo $contactUrl; ?>">İletişim</a></li><?php endif; ?></ul></div>
         <div><h4>Hizmetler</h4><ul><li>İşitme Testi</li><li>Cihaz Danışmanlığı</li><li>Teknik Servis</li><li>Evde Hizmet</li></ul></div>
         <div>
             <h4>Sefaköy Şubesi <small>(Merkez)</small></h4>

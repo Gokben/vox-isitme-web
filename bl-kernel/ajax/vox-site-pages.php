@@ -5,7 +5,7 @@ checkRole(array('admin'));
 
 $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
 $slug = isset($_POST['slug']) ? (string)$_POST['slug'] : '';
-$allowedPages = array('hakkimizda', 'randevu', 'blog', 'iletisim');
+$allowedPages = array('hakkimizda', 'randevu', 'cihazlar', 'blog', 'iletisim');
 if (!in_array($slug, $allowedPages, true) || !in_array($action, array('disable', 'restore'), true)) {
     ajaxResponse(1, 'Geçersiz sayfa işlemi.');
 }

@@ -10,17 +10,21 @@ $voxAdminLoggedIn = $voxLogin->isLogged();
 $baseUrl = rtrim(Theme::siteUrl(), '/');
 $homeUrl = $baseUrl . '/';
 $aboutUrl = $baseUrl . '/hakkimizda';
+$devicesUrl = $baseUrl . '/cihazlar';
 $blogUrl = $baseUrl . '/blog';
 $contactUrl = $baseUrl . '/iletisim';
 $appointmentUrl = $baseUrl . '/randevu';
 $requestPath = rtrim((string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/'), '/');
 $blogPath = rtrim((string)(parse_url($blogUrl, PHP_URL_PATH) ?: '/blog'), '/');
 $isBlogRoute = $requestPath === $blogPath;
+$devicesPath = rtrim((string)(parse_url($devicesUrl, PHP_URL_PATH) ?: '/cihazlar'), '/');
+$isDevicesRoute = $requestPath === $devicesPath;
 $contactPath = rtrim((string)(parse_url($contactUrl, PHP_URL_PATH) ?: '/iletisim'), '/');
 $isContactRoute = $requestPath === $contactPath;
 $managedPagePaths = [
     'hakkimizda' => rtrim((string)(parse_url($aboutUrl, PHP_URL_PATH) ?: '/hakkimizda'), '/'),
     'randevu' => rtrim((string)(parse_url($appointmentUrl, PHP_URL_PATH) ?: '/randevu'), '/'),
+    'cihazlar' => $devicesPath,
     'blog' => $blogPath,
     'iletisim' => $contactPath,
 ];
@@ -45,7 +49,7 @@ $voxPageIsEnabled = static function (string $slug) use ($voxDisabledPages): bool
 $isVoxPageDisabled = $voxCurrentManagedPage !== '' && !$voxPageIsEnabled($voxCurrentManagedPage);
 if ($isVoxPageDisabled) {
     header('HTTP/1.0 404 Not Found', true, 404);
-} elseif ($isBlogRoute || $isContactRoute) {
+} elseif ($isBlogRoute || $isDevicesRoute || $isContactRoute) {
     header('HTTP/1.0 200 OK', true, 200);
 }
 
@@ -150,6 +154,10 @@ if ($isVoxPageDisabled) {
     $voxAdminEditUrl = DOMAIN_ADMIN . 'content';
     $voxAdminEditLabel = 'Blog içeriklerini yönet';
     $voxBlockPageKey = 'blog';
+} elseif ($isDevicesRoute) {
+    $voxAdminEditUrl = DOMAIN_ADMIN . 'content';
+    $voxAdminEditLabel = 'Cihazlar sayfasını yönet';
+    $voxBlockPageKey = 'cihazlar';
 } elseif ($isContactRoute) {
     $voxAdminEditUrl = DOMAIN_ADMIN . 'settings';
     $voxAdminEditLabel = 'İletişim bilgilerini yönet';
@@ -401,6 +409,8 @@ include THEME_DIR_PHP . 'header.php';
 
 if ($isBlogRoute) {
     include THEME_DIR_PHP . 'blog.php';
+} elseif ($isDevicesRoute) {
+    include THEME_DIR_PHP . 'devices.php';
 } elseif ($isContactRoute) {
     include THEME_DIR_PHP . 'contact.php';
 } elseif ($WHERE_AM_I === 'page') {

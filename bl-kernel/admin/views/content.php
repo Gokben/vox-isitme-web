@@ -265,6 +265,7 @@ function voxSitePagesPanel() {
 		array('slug'=>'home', 'title'=>'Ana Sayfa', 'url'=>$baseUrl.'/', 'type'=>'Ana sayfa', 'editable'=>false),
 		array('slug'=>'hakkimizda', 'title'=>'Hakkımızda', 'url'=>$baseUrl.'/hakkimizda', 'type'=>'Sayfa', 'editable'=>true),
 		array('slug'=>'randevu', 'title'=>'Randevu', 'url'=>$baseUrl.'/randevu', 'type'=>'Sayfa', 'editable'=>true),
+		array('slug'=>'cihazlar', 'title'=>'Cihazlar', 'url'=>$baseUrl.'/cihazlar', 'type'=>'Rehber', 'editable'=>true),
 		array('slug'=>'blog', 'title'=>'Blog', 'url'=>$baseUrl.'/blog', 'type'=>'Blog', 'editable'=>true),
 		array('slug'=>'iletisim', 'title'=>'İletişim', 'url'=>$baseUrl.'/iletisim', 'type'=>'Sayfa', 'editable'=>true)
 	);
