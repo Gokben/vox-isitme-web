@@ -51,8 +51,12 @@ class pluginVisitsStats extends Plugin
 	{
 		$currentDate = Date::current('Y-m-d');
 		$isNewDay = !file_exists($this->workspace() . $currentDate . '.log');
-		$visitorAdded = $this->addVisitor();
-		$this->addTurkeyCityVisitor($currentDate);
+		$location = $this->getTurkeyLocation();
+		if (empty($location)) {
+			return false;
+		}
+		$visitorAdded = $this->addVisitor($location['ip']);
+		$this->addTurkeyCityVisitor($currentDate, $location);
 		if ($isNewDay && $visitorAdded) {
 			$this->deleteOldLogs();
 		}
@@ -190,14 +194,14 @@ class pluginVisitsStats extends Plugin
 	}
 
 	// Add a line to the current day log file
-	public function addVisitor()
+	public function addVisitor($ip = null)
 	{
 		global $security;
 		if (Cookie::get('BLUDIT-KEY') && defined('BLUDIT_PRO') && $this->getValue('excludeAdmins')) {
 			return false;
 		}
 		$currentTime = Date::current('Y-m-d H:i:s');
-		$ip     = $security->getUserIp();
+		$ip     = $ip ?: $security->getUserIp();
 		$hashIP = md5($ip);
 
 		$line        = json_encode(array($hashIP, $currentTime));
@@ -207,19 +211,13 @@ class pluginVisitsStats extends Plugin
 		return file_put_contents($logFile, $line . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
 	}
 
-	private function addTurkeyCityVisitor($date)
+	private function addTurkeyCityVisitor($date, $location = null)
 	{
-		global $security;
-		$ip = $security->getUserIp();
-		if (!$this->isPublicIp($ip)) {
+		$location = $location ?: $this->getTurkeyLocation();
+		if (empty($location)) {
 			return false;
 		}
-
-		$visitor = hash('sha256', $ip . '|visits-stats-geo-v1');
-		$location = $this->lookupLocation($ip, $visitor);
-		if (empty($location) || $location['country'] !== 'TR' || empty($location['city'])) {
-			return false;
-		}
+		$visitor = $location['visitor'];
 
 		$file = $this->workspace() . 'geo-' . $date . '.log';
 		if (file_exists($file)) {
@@ -238,6 +236,23 @@ class pluginVisitsStats extends Plugin
 		return file_put_contents($file, $record . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
 	}
 
+	private function getTurkeyLocation()
+	{
+		global $security;
+		$ip = $security->getUserIp();
+		if (!$this->isPublicIp($ip)) {
+			return null;
+		}
+		$visitor = hash('sha256', $ip . '|visits-stats-geo-v1');
+		$location = $this->lookupLocation($ip, $visitor);
+		if (empty($location) || $location['country'] !== 'TR' || empty($location['city'])) {
+			return null;
+		}
+		$location['ip'] = $ip;
+		$location['visitor'] = $visitor;
+		return $location;
+	}
+
 	private function isPublicIp($ip)
 	{
 		return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
@@ -254,7 +269,11 @@ class pluginVisitsStats extends Plugin
 			}
 		}
 		if (isset($cache[$visitor])) {
-			return $cache[$visitor];
+			if (isset($cache[$visitor]['country']) && $cache[$visitor]['country'] === 'TR') {
+				return $cache[$visitor];
+			}
+			unset($cache[$visitor]);
+			file_put_contents($cacheFile, json_encode($cache), LOCK_EX);
 		}
 
 		$url = 'https://ipwho.is/' . rawurlencode($ip) . '?fields=success,country_code,city';
@@ -276,8 +295,11 @@ class pluginVisitsStats extends Plugin
 		}
 		$city = isset($data['city']) ? trim(strip_tags($data['city'])) : '';
 		$location = array('country' => strtoupper($data['country_code']), 'city' => $city);
-		$cache[$visitor] = $location;
-		file_put_contents($cacheFile, json_encode($cache), LOCK_EX);
+		// Do not retain cache entries for visitors outside Turkey.
+		if ($location['country'] === 'TR') {
+			$cache[$visitor] = $location;
+			file_put_contents($cacheFile, json_encode($cache), LOCK_EX);
+		}
 		return $location;
 	}
 }

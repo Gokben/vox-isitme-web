@@ -252,7 +252,7 @@
             <div class="analytics-section mb-4">
                 <ul class="list-group list-group-striped b-0 mb-3">
                     <li class="list-group-item">
-                        <h4 class="m-0"><?php $L->p('Analytics') ?></h4>
+                        <h4 class="m-0">Türkiye analitiği</h4>
                     </li>
                 </ul>
                 <div class="row align-items-center">
@@ -260,15 +260,15 @@
                         <div class="row text-center">
                             <div class="col-4 col-lg-12 mb-0 mb-lg-4">
                                 <div class="metric-value"><?php echo $visitsToday; ?></div>
-                                <div class="metric-label"><?php $L->p('Visits Today') ?></div>
+                                <div class="metric-label">Türkiye ziyaretleri bugün</div>
                             </div>
                             <div class="col-4 col-lg-12 mb-0 mb-lg-4">
                                 <div class="metric-value"><?php echo $uniqueVisitors; ?></div>
-                                <div class="metric-label"><?php $L->p('Unique Visitors') ?></div>
+                                <div class="metric-label">Türkiye tekil ziyaretçileri</div>
                             </div>
                             <div class="col-4 col-lg-12">
                                 <div class="metric-value"><?php echo $weekData['total']; ?></div>
-                                <div class="metric-label"><?php $L->p('7-Day Total') ?></div>
+                                <div class="metric-label">Türkiye · 7 gün toplam</div>
                             </div>
                         </div>
                     </div>
@@ -286,13 +286,13 @@
                     data: {
                         labels: <?php echo json_encode($weekData['labels']); ?>,
                         datasets: [{
-                            label: <?php echo json_encode($L->g('unique-visitors'), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE) ?>,
+                            label: 'Türkiye tekil ziyaretçileri',
                             backgroundColor: 'rgba(0,120,212,0.45)',
                             borderColor: 'rgba(0,120,212,0.75)',
                             borderWidth: 1,
                             data: <?php echo json_encode($weekData['unique']); ?>
                         }, {
-                            label: <?php echo json_encode($L->g('visits-today'), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE) ?>,
+                            label: 'Türkiye ziyaretleri',
                             backgroundColor: 'rgba(148,163,184,0.5)',
                             borderColor: 'rgba(100,116,139,0.8)',
                             borderWidth: 1,
