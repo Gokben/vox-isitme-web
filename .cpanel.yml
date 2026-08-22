@@ -1,8 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=$HOME/public_html/voxweb/
-    - /usr/bin/test "$DEPLOYPATH" = "$HOME/public_html/voxweb/"
+    - export DEPLOYPATH=$HOME/public_html/
+    - /usr/bin/test "$DEPLOYPATH" = "$HOME/public_html/"
     - /bin/mkdir -p "$DEPLOYPATH"
     - /bin/rm -rf "$DEPLOYPATH/bl-kernel" "$DEPLOYPATH/bl-languages" "$DEPLOYPATH/bl-plugins" "$DEPLOYPATH/bl-themes"
     - /bin/mkdir -p "$DEPLOYPATH/bl-content"
