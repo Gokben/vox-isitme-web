@@ -7,7 +7,7 @@ DirectoryIndex index.php
 RewriteEngine on
 
 # Base directory
-RewriteBase /voxweb/
+RewriteBase /
 
 # Deny direct access to the next directories
 RewriteRule ^bl-content/(databases|workspaces|pages|tmp)/.*$ - [R=404,L]
