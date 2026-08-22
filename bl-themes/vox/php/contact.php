@@ -38,7 +38,7 @@
     </div>
 </section>
 
-<section class="contact-form-section">
+<section class="contact-form-section" id="iletisim-formu">
     <div class="container contact-form-layout">
         <div>
             <span class="kicker">Bize yazın</span>
@@ -46,7 +46,7 @@
             <p>Sorularınızı ve taleplerinizi form üzerinden iletin. Ekibimiz en kısa sürede sizinle iletişime geçsin.</p>
             <span class="contact-form-badge is-active">Form aktif</span>
         </div>
-        <form class="contact-form" method="post" action="<?php echo htmlspecialchars($contactUrl, ENT_QUOTES, 'UTF-8'); ?>">
+        <form class="contact-form" method="post" action="<?php echo htmlspecialchars($contactUrl, ENT_QUOTES, 'UTF-8'); ?>#iletisim-formu">
             <input type="hidden" name="vox_contact" value="1">
             <input type="hidden" name="csrf" value="<?php echo htmlspecialchars((string)$_SESSION['vox_csrf'], ENT_QUOTES, 'UTF-8'); ?>">
             <label class="honeypot" aria-hidden="true">Web sitesi<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
