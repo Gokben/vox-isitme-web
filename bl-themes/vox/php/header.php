@@ -8,7 +8,7 @@ if (!empty($voxAdminLoggedIn)) {
 $seoSiteName = trim((string)$site->title()) ?: 'Vox İşitme';
 $seoBaseUrl = rtrim(Theme::siteUrl(), '/');
 $seoCurrentUrl = $seoBaseUrl . '/';
-$seoTitle = $seoSiteName;
+$seoTitle = 'İşitme Cihazınızı Korur';
 $seoDescription = 'Vox İşitme; işitme testi, işitme cihazı danışmanlığı ve teknik servis için Sefaköy ve Bahçeşehir şubelerindedir.';
 $seoType = 'website';
 $seoImage = DOMAIN_THEME_IMG . 'hero-vox-hearing-v14.png';
