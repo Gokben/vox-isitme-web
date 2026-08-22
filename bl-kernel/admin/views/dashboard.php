@@ -246,6 +246,7 @@
                 $visitsToday    = $visitsStats->visits($currentDate);
                 $uniqueVisitors = $visitsStats->uniqueVisitors($currentDate);
                 $weekData       = $visitsStats->getLastDaysData(7);
+				$turkeyCities   = $visitsStats->getTurkeyCityData(30);
             ?>
             <!-- Analytics Section -->
             <div class="analytics-section mb-4">
@@ -322,6 +323,51 @@
                 });
             })();
             </script>
+
+			<div class="analytics-section mb-4">
+				<ul class="list-group list-group-striped b-0 mb-3">
+					<li class="list-group-item">
+						<h4 class="m-0">Türkiye’den tekil ziyaretçiler</h4>
+						<small class="text-muted">Son 30 gün · şehir bazında</small>
+					</li>
+				</ul>
+				<?php if (!empty($turkeyCities)): ?>
+					<canvas id="turkey-cities-chart"></canvas>
+				<?php else: ?>
+					<p class="text-muted mb-0">Türkiye şehir verisi, bu takip özelliği etkinleştikten sonra yeni ziyaretlerden oluşur.</p>
+				<?php endif; ?>
+			</div>
+			<?php if (!empty($turkeyCities)): ?>
+			<script>
+			(function() {
+				var ctx = document.getElementById('turkey-cities-chart');
+				if (!ctx || typeof Chart === 'undefined') { return; }
+				new Chart(ctx, {
+					type: 'horizontalBar',
+					data: {
+						labels: <?php echo json_encode(array_keys($turkeyCities), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE); ?>,
+						datasets: [{
+							label: 'Tekil ziyaretçi',
+							data: <?php echo json_encode(array_values($turkeyCities)); ?>,
+							backgroundColor: 'rgba(16, 185, 129, 0.55)',
+							borderColor: 'rgba(5, 150, 105, 0.9)',
+							borderWidth: 1
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: { display: false },
+						scales: {
+							xAxes: [{ ticks: { beginAtZero: true, precision: 0, fontColor: '#94A3B8' }, gridLines: { color: 'rgba(0,0,0,0.05)' } }],
+							yAxes: [{ ticks: { fontColor: '#475569' }, gridLines: { display: false } }]
+						},
+						tooltips: { callbacks: { label: function(item) { return item.xLabel + ' tekil ziyaretçi'; } } }
+					}
+				});
+			})();
+			</script>
+			<?php endif; ?>
             <?php endif; ?>
 
             <!-- Notifications -->
