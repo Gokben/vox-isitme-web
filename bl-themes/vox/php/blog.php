@@ -56,11 +56,45 @@ $blogPosts = [
     ],
 ];
 
+// Local geliştirme sırasında veritabanına kaydedilmiş tema görsellerini
+// ziyaretçinin bilgisayarındaki 127.0.0.1 adresine göndermek yerine mevcut
+// sitenin tema dizinine taşı. Harici görsel adreslerine dokunulmaz.
+$normalizeBlogImageUrl = static function ($imageUrl): string {
+    $imageUrl = trim((string)$imageUrl);
+    if (preg_match(
+        '~^https?://(?:127\\.0\\.0\\.1|localhost)(?::\\d+)?/bl-themes/vox/img/([a-z0-9._-]+)(?:[?#].*)?$~i',
+        $imageUrl,
+        $matches
+    )) {
+        return DOMAIN_THEME_IMG . $matches[1];
+    }
+    return $imageUrl;
+};
+
 $blogDatabaseFile = PATH_DATABASES . 'vox-blog.json';
 if (is_file($blogDatabaseFile)) {
     $storedBlogPosts = json_decode((string)file_get_contents($blogDatabaseFile), true);
     if (is_array($storedBlogPosts)) {
         $blogPosts = $storedBlogPosts;
+        $blogDatabaseChanged = false;
+        foreach ($blogPosts as &$storedBlogPost) {
+            if (!is_array($storedBlogPost) || !isset($storedBlogPost['image'])) {
+                continue;
+            }
+            $normalizedImage = $normalizeBlogImageUrl($storedBlogPost['image']);
+            if ($normalizedImage !== $storedBlogPost['image']) {
+                $storedBlogPost['image'] = $normalizedImage;
+                $blogDatabaseChanged = true;
+            }
+        }
+        unset($storedBlogPost);
+        if ($blogDatabaseChanged) {
+            @file_put_contents(
+                $blogDatabaseFile,
+                json_encode($blogPosts, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT),
+                LOCK_EX
+            );
+        }
     }
 } else {
     @file_put_contents(
