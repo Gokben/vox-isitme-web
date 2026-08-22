@@ -44,7 +44,6 @@
             <span class="kicker">Bize yazın</span>
             <h2>İletişim formu</h2>
             <p>Sorularınızı ve taleplerinizi form üzerinden iletin. Ekibimiz en kısa sürede sizinle iletişime geçsin.</p>
-            <span class="contact-form-badge is-active">Form aktif</span>
         </div>
         <form class="contact-form" method="post" action="<?php echo htmlspecialchars($contactUrl, ENT_QUOTES, 'UTF-8'); ?>#iletisim-formu">
             <input type="hidden" name="vox_contact" value="1">
