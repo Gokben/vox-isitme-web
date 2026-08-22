@@ -4,100 +4,6 @@ $bodyClass = $WHERE_AM_I === 'home' ? 'is-home' : ($viewSlug === 'randevu' ? 'is
 if (!empty($voxAdminLoggedIn)) {
     $bodyClass .= ' has-vox-edit-bar';
 }
-
-$seoSiteName = trim((string)$site->title()) ?: 'Vox İşitme';
-$seoBaseUrl = rtrim(Theme::siteUrl(), '/');
-$seoCurrentUrl = $seoBaseUrl . '/';
-$seoTitle = $seoSiteName;
-$seoDescription = 'Vox İşitme; işitme testi, işitme cihazı danışmanlığı ve teknik servis için Sefaköy ve Bahçeşehir şubelerindedir.';
-$seoType = 'website';
-$seoImage = DOMAIN_THEME_IMG . 'hero-vox-hearing-v14.png';
-$seoArticle = null;
-
-if (!empty($isBlogRoute)) {
-    $seoCurrentUrl = $seoBaseUrl . '/blog';
-    $seoTitle = 'İşitme Sağlığı ve Cihaz Rehberi | ' . $seoSiteName;
-    $seoDescription = 'İşitme sağlığı, işitme cihazı kullanımı ve günlük yaşam için Vox İşitme uzmanlarından yararlı bilgiler.';
-    $requestedBlogSlug = trim((string)($_GET['yazi'] ?? ''));
-    $blogFile = PATH_DATABASES . 'vox-blog.json';
-    $blogRecords = is_file($blogFile) ? json_decode((string)file_get_contents($blogFile), true) : [];
-    if ($requestedBlogSlug !== '' && is_array($blogRecords)) {
-        foreach ($blogRecords as $blogRecord) {
-            if (!is_array($blogRecord) || ($blogRecord['slug'] ?? '') !== $requestedBlogSlug) {
-                continue;
-            }
-            $seoCurrentUrl .= '?yazi=' . rawurlencode($requestedBlogSlug);
-            $seoTitle = trim((string)($blogRecord['title'] ?? '')) . ' | ' . $seoSiteName;
-            $seoDescription = trim((string)($blogRecord['excerpt'] ?? $seoDescription));
-            $seoImage = trim((string)($blogRecord['image'] ?? $seoImage));
-            $seoType = 'article';
-            $seoArticle = [
-                '@type' => 'Article',
-                'mainEntityOfPage' => $seoCurrentUrl,
-                'headline' => trim((string)($blogRecord['title'] ?? '')),
-                'description' => $seoDescription,
-                'image' => $seoImage,
-                'author' => ['@id' => $seoBaseUrl . '/#organization'],
-                'publisher' => ['@id' => $seoBaseUrl . '/#organization'],
-                'inLanguage' => 'tr-TR',
-            ];
-            break;
-        }
-    }
-} elseif (!empty($isDevicesRoute)) {
-    $seoCurrentUrl = $seoBaseUrl . '/cihazlar';
-    $seoTitle = 'İşitme Cihazı Kullanım Rehberi | ' . $seoSiteName;
-    $seoDescription = 'İşitme cihazını takma, temizleme, şarj etme ve günlük kullanımına ilişkin pratik Vox İşitme rehberi.';
-} elseif (!empty($isContactRoute)) {
-    $seoCurrentUrl = $seoBaseUrl . '/iletisim';
-    $seoTitle = 'İletişim ve Şubeler | ' . $seoSiteName;
-    $seoDescription = 'Vox İşitme Sefaköy ve Bahçeşehir şubelerinin adres, telefon, harita ve iletişim bilgileri.';
-} elseif ($WHERE_AM_I === 'page' && isset($page)) {
-    $seoCurrentUrl = $page->permalink(true);
-    $seoTitle = trim((string)$page->title()) . ' | ' . $seoSiteName;
-    $seoDescription = trim((string)$page->description()) ?: $seoDescription;
-    $pageSlug = method_exists($page, 'slug') ? (string)$page->slug() : '';
-    if ($pageSlug === 'hakkimizda') {
-        $seoDescription = 'Vox İşitme; Sefaköy ve Bahçeşehir şubelerinde işitme sağlığı, cihaz danışmanlığı ve teknik servis desteği sunar.';
-    } elseif ($pageSlug === 'randevu') {
-        $seoDescription = 'Vox İşitme Sefaköy veya Bahçeşehir şubesi için işitme testi ve cihaz danışmanlığı randevu talebinizi oluşturun.';
-    }
-}
-
-$seoJson = [
-    '@context' => 'https://schema.org',
-    '@graph' => [
-        [
-            '@type' => 'Organization',
-            '@id' => $seoBaseUrl . '/#organization',
-            'name' => $seoSiteName,
-            'url' => $seoBaseUrl . '/',
-            'logo' => DOMAIN_THEME_IMG . 'brand-mark.png',
-            'email' => 'bilgi@voxisitme.com',
-        ],
-        [
-            '@type' => 'HearingAidStore',
-            '@id' => $seoBaseUrl . '/#sefakoy',
-            'name' => $seoSiteName . ' Sefaköy Şubesi',
-            'url' => $seoBaseUrl . '/iletisim',
-            'telephone' => '+90 501 143 80 43',
-            'parentOrganization' => ['@id' => $seoBaseUrl . '/#organization'],
-            'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Kartaltepe Mah. Süvari Cad. No:8E', 'addressLocality' => 'Küçükçekmece', 'addressRegion' => 'İstanbul', 'addressCountry' => 'TR'],
-        ],
-        [
-            '@type' => 'HearingAidStore',
-            '@id' => $seoBaseUrl . '/#bahcesehir',
-            'name' => $seoSiteName . ' Bahçeşehir Şubesi',
-            'url' => $seoBaseUrl . '/iletisim',
-            'telephone' => '+90 501 000 80 43',
-            'parentOrganization' => ['@id' => $seoBaseUrl . '/#organization'],
-            'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Bahçeşehir 1. Kısım Mah. Kemal Sunal Cad. No:21C', 'addressLocality' => 'Başakşehir', 'addressRegion' => 'İstanbul', 'addressCountry' => 'TR'],
-        ],
-    ],
-];
-if (is_array($seoArticle)) {
-    $seoJson['@graph'][] = $seoArticle;
-}
 ?>
 <!doctype html>
 <html lang="<?php echo Theme::lang(); ?>">
@@ -105,27 +11,25 @@ if (is_array($seoArticle)) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#064b2b">
-    <title><?php echo htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8'); ?></title>
-    <meta name="description" content="<?php echo htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8'); ?>">
-    <link rel="canonical" href="<?php echo htmlspecialchars($seoCurrentUrl, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:locale" content="tr_TR">
-    <meta property="og:type" content="<?php echo $seoType; ?>">
-    <meta property="og:site_name" content="<?php echo htmlspecialchars($seoSiteName, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:title" content="<?php echo htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:description" content="<?php echo htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:url" content="<?php echo htmlspecialchars($seoCurrentUrl, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:image" content="<?php echo htmlspecialchars($seoImage, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php echo htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta name="twitter:description" content="<?php echo htmlspecialchars($seoDescription, ENT_QUOTES, 'UTF-8'); ?>">
-    <meta name="twitter:image" content="<?php echo htmlspecialchars($seoImage, ENT_QUOTES, 'UTF-8'); ?>">
-    <script type="application/ld+json"><?php echo json_encode($seoJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
+    <?php if (!empty($isBlogRoute)): ?>
+    <title>Blog Yazıları | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="İşitme sağlığı, cihaz teknolojileri ve günlük yaşam için Vox İşitme uzmanlarından yararlı bilgiler.">
+    <?php elseif (!empty($isDevicesRoute)): ?>
+    <title>Cihaz Kullanım Rehberi | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="İşitme cihazınızı takma, temizleme, şarj etme ve günlük kullanımla ilgili pratik bilgiler.">
+    <?php elseif (!empty($isContactRoute)): ?>
+    <title>İletişim | <?php echo htmlspecialchars($site->title(), ENT_QUOTES, 'UTF-8'); ?></title>
+    <meta name="description" content="Vox İşitme Sefaköy ve Bahçeşehir şubelerinin adres, telefon ve harita bilgileri.">
+    <?php else: ?>
+    <?php echo Theme::metaTagTitle(); ?>
+    <?php echo Theme::metaTagDescription(); ?>
+    <?php endif; ?>
     <?php echo Theme::favicon('img/brand-mark.png'); ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?php echo DOMAIN_THEME; ?>css/style.css?v=<?php echo filemtime(THEME_DIR_CSS . 'style.css'); ?>">
-    <?php if (empty($isBlogRoute)): ?><?php Theme::plugins('siteHead'); ?><?php endif; ?>
+    <?php Theme::plugins('siteHead'); ?>
 </head>
 <body class="<?php echo $bodyClass; ?>">
 <?php Theme::plugins('siteBodyBegin'); ?>

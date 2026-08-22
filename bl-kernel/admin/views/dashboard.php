@@ -246,13 +246,12 @@
                 $visitsToday    = $visitsStats->visits($currentDate);
                 $uniqueVisitors = $visitsStats->uniqueVisitors($currentDate);
                 $weekData       = $visitsStats->getLastDaysData(7);
-				$turkeyCities   = $visitsStats->getTurkeyCityData(30);
             ?>
             <!-- Analytics Section -->
             <div class="analytics-section mb-4">
                 <ul class="list-group list-group-striped b-0 mb-3">
                     <li class="list-group-item">
-                        <h4 class="m-0">Türkiye analitiği</h4>
+                        <h4 class="m-0"><?php $L->p('Analytics') ?></h4>
                     </li>
                 </ul>
                 <div class="row align-items-center">
@@ -260,15 +259,15 @@
                         <div class="row text-center">
                             <div class="col-4 col-lg-12 mb-0 mb-lg-4">
                                 <div class="metric-value"><?php echo $visitsToday; ?></div>
-                                <div class="metric-label">Türkiye ziyaretleri bugün</div>
+                                <div class="metric-label"><?php $L->p('Visits Today') ?></div>
                             </div>
                             <div class="col-4 col-lg-12 mb-0 mb-lg-4">
                                 <div class="metric-value"><?php echo $uniqueVisitors; ?></div>
-                                <div class="metric-label">Türkiye tekil ziyaretçileri</div>
+                                <div class="metric-label"><?php $L->p('Unique Visitors') ?></div>
                             </div>
                             <div class="col-4 col-lg-12">
                                 <div class="metric-value"><?php echo $weekData['total']; ?></div>
-                                <div class="metric-label">Türkiye · 7 gün toplam</div>
+                                <div class="metric-label"><?php $L->p('7-Day Total') ?></div>
                             </div>
                         </div>
                     </div>
@@ -286,13 +285,13 @@
                     data: {
                         labels: <?php echo json_encode($weekData['labels']); ?>,
                         datasets: [{
-                            label: 'Türkiye tekil ziyaretçileri',
+                            label: <?php echo json_encode($L->g('unique-visitors'), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE) ?>,
                             backgroundColor: 'rgba(0,120,212,0.45)',
                             borderColor: 'rgba(0,120,212,0.75)',
                             borderWidth: 1,
                             data: <?php echo json_encode($weekData['unique']); ?>
                         }, {
-                            label: 'Türkiye ziyaretleri',
+                            label: <?php echo json_encode($L->g('visits-today'), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE) ?>,
                             backgroundColor: 'rgba(148,163,184,0.5)',
                             borderColor: 'rgba(100,116,139,0.8)',
                             borderWidth: 1,
@@ -323,51 +322,6 @@
                 });
             })();
             </script>
-
-			<div class="analytics-section mb-4">
-				<ul class="list-group list-group-striped b-0 mb-3">
-					<li class="list-group-item">
-						<h4 class="m-0">Türkiye’den tekil ziyaretçiler</h4>
-						<small class="text-muted">Son 30 gün · şehir bazında</small>
-					</li>
-				</ul>
-				<?php if (!empty($turkeyCities)): ?>
-					<canvas id="turkey-cities-chart"></canvas>
-				<?php else: ?>
-					<p class="text-muted mb-0">Türkiye şehir verisi, bu takip özelliği etkinleştikten sonra yeni ziyaretlerden oluşur.</p>
-				<?php endif; ?>
-			</div>
-			<?php if (!empty($turkeyCities)): ?>
-			<script>
-			(function() {
-				var ctx = document.getElementById('turkey-cities-chart');
-				if (!ctx || typeof Chart === 'undefined') { return; }
-				new Chart(ctx, {
-					type: 'horizontalBar',
-					data: {
-						labels: <?php echo json_encode(array_keys($turkeyCities), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE); ?>,
-						datasets: [{
-							label: 'Tekil ziyaretçi',
-							data: <?php echo json_encode(array_values($turkeyCities)); ?>,
-							backgroundColor: 'rgba(16, 185, 129, 0.55)',
-							borderColor: 'rgba(5, 150, 105, 0.9)',
-							borderWidth: 1
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: { display: false },
-						scales: {
-							xAxes: [{ ticks: { beginAtZero: true, precision: 0, fontColor: '#94A3B8' }, gridLines: { color: 'rgba(0,0,0,0.05)' } }],
-							yAxes: [{ ticks: { fontColor: '#475569' }, gridLines: { display: false } }]
-						},
-						tooltips: { callbacks: { label: function(item) { return item.xLabel + ' tekil ziyaretçi'; } } }
-					}
-				});
-			})();
-			</script>
-			<?php endif; ?>
             <?php endif; ?>
 
             <!-- Notifications -->

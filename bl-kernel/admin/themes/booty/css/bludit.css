@@ -565,10 +565,6 @@ body.login {
 	background: var(--bg-card);
 }
 
-#turkey-cities-chart {
-	min-height: 260px;
-}
-
 #dashboard .analytics-section ul.list-group.list-group-striped {
 	border: none;
 	border-radius: 0;

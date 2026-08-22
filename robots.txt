@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /bl-content/
-Sitemap: https://voxisitme.com/sitemap.xml

@@ -1,18 +1,6 @@
 AddDefaultCharset UTF-8
 DirectoryIndex index.php
 
-# Tek bir HTTPS alan adı kullanın; aynı içeriğin farklı URL'lerde indekslenmesini önler.
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www\.voxisitme\.com$ [NC]
-RewriteRule ^ https://voxisitme.com%{REQUEST_URI} [R=301,L]
-RewriteCond %{HTTPS} !=on
-RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
-RewriteRule ^ https://voxisitme.com%{REQUEST_URI} [R=301,L]
-</IfModule>
-
-Options -Indexes
-
 <IfModule mod_rewrite.c>
 
 # Enable rewrite rules
@@ -23,9 +11,6 @@ RewriteBase /
 
 # Deny direct access to the next directories
 RewriteRule ^bl-content/(databases|workspaces|pages|tmp)/.*$ - [R=404,L]
-
-# Arama motorları için dinamik XML site haritası.
-RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
 # All URL process by index.php
 RewriteCond %{REQUEST_FILENAME} !-f
