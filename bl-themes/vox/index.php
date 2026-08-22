@@ -448,9 +448,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_appointment'])) {
                 @mkdir($storageDirectory, 0750, true);
             }
 
+            $appointmentCreatedAt = new DateTimeImmutable('now', new DateTimeZone('Europe/Istanbul'));
             $record = [
                 'id' => bin2hex(random_bytes(8)),
-                'createdAt' => (new DateTimeImmutable('now', new DateTimeZone('Europe/Istanbul')))->format(DATE_ATOM),
+                'createdAt' => $appointmentCreatedAt->format(DATE_ATOM),
                 'name' => $name,
                 'phone' => $phone,
                 'email' => $email,
@@ -469,6 +470,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_appointment'])) {
             if ($saved === false) {
                 $appointmentState = ['type' => 'error', 'message' => 'Talebiniz kaydedilemedi. Lütfen bizi telefonla arayın.'];
             } else {
+                $mailSubject = 'Vox web sitesi randevu talebi - ' . $name;
+                $encodedSubject = '=?UTF-8?B?' . base64_encode($mailSubject) . '?=';
+                $mailBody = "Yeni randevu talebi\n\n"
+                    . "Talep tarihi: " . $appointmentCreatedAt->format('d.m.Y H:i') . "\n"
+                    . "Ad Soyad: " . $name . "\n"
+                    . "Telefon: " . $phone . "\n"
+                    . "E-posta: " . $email . "\n"
+                    . "Şube: " . $branch . "\n"
+                    . "Randevu tarihi: " . $selectedDate->format('d.m.Y') . "\n"
+                    . "Randevu saati: " . $time . "\n\n"
+                    . "Not:\n" . ($note !== '' ? $note : 'Belirtilmedi') . "\n";
+                $mailHeaders = implode("\r\n", [
+                    'MIME-Version: 1.0',
+                    'Content-Type: text/plain; charset=UTF-8',
+                    'From: Vox Web <no-reply@voxisitme.com>',
+                    'Reply-To: ' . $email,
+                    'X-Mailer: PHP/' . phpversion(),
+                ]);
+                @mail('bilgi@voxisitme.com', $encodedSubject, $mailBody, $mailHeaders);
+
                 $_SESSION['vox_last_request'] = time();
                 $_SESSION['vox_csrf'] = bin2hex(random_bytes(32));
                 $appointmentValues = [];
