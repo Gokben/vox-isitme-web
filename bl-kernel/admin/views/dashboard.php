@@ -332,8 +332,8 @@
 					</li>
 				</ul>
 				<?php if (!empty($turkeyCities)): ?>
-					<div class="turkey-cities-chart-wrap">
-						<canvas id="turkey-cities-chart"></canvas>
+					<div class="turkey-cities-chart-wrap" style="position:relative;height:320px;max-height:320px;overflow:hidden;">
+						<canvas id="turkey-cities-chart" style="display:block;width:100%;height:100%;"></canvas>
 					</div>
 				<?php else: ?>
 					<p class="text-muted mb-0">Türkiye şehir verisi, bu takip özelliği etkinleştikten sonra yeni ziyaretlerden oluşur.</p>
