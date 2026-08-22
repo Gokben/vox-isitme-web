@@ -206,6 +206,78 @@ $appointmentValues = [];
 $contactState = ['type' => '', 'message' => ''];
 $contactValues = [];
 
+$turnstileConfig = [];
+$turnstileConfigFile = PATH_WORKSPACES . 'vox-security' . DS . 'turnstile.json';
+if (is_file($turnstileConfigFile)) {
+    $decodedTurnstileConfig = json_decode((string)file_get_contents($turnstileConfigFile), true);
+    if (is_array($decodedTurnstileConfig)) {
+        $turnstileConfig = $decodedTurnstileConfig;
+    }
+}
+$turnstileSiteKey = trim((string)(getenv('VOX_TURNSTILE_SITE_KEY') ?: ($turnstileConfig['siteKey'] ?? '')));
+$turnstileSecretKey = trim((string)(getenv('VOX_TURNSTILE_SECRET_KEY') ?: ($turnstileConfig['secretKey'] ?? '')));
+$turnstileEnabled = $turnstileSiteKey !== '' && $turnstileSecretKey !== '';
+$turnstileExpectedHostname = strtolower((string)(parse_url($baseUrl, PHP_URL_HOST) ?: 'voxisitme.com'));
+$validateTurnstile = static function (string $token) use ($turnstileSecretKey, $turnstileExpectedHostname): bool {
+    $token = trim($token);
+    if ($token === '' || strlen($token) > 2048) {
+        return false;
+    }
+
+    $payload = http_build_query([
+        'secret' => $turnstileSecretKey,
+        'response' => $token,
+        'remoteip' => (string)($_SERVER['REMOTE_ADDR'] ?? ''),
+    ], '', '&', PHP_QUERY_RFC3986);
+    $responseBody = false;
+
+    if (function_exists('curl_init')) {
+        $handle = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
+        if ($handle !== false) {
+            curl_setopt_array($handle, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CONNECTTIMEOUT => 3,
+                CURLOPT_TIMEOUT => 7,
+            ]);
+            $responseBody = curl_exec($handle);
+            $statusCode = (int)curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
+            curl_close($handle);
+            if ($statusCode !== 200) {
+                $responseBody = false;
+            }
+        }
+    } elseif (filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'content' => $payload,
+                'timeout' => 7,
+            ],
+        ]);
+        $responseBody = @file_get_contents(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            false,
+            $context
+        );
+    }
+
+    if (!is_string($responseBody) || $responseBody === '') {
+        return false;
+    }
+    $verification = json_decode($responseBody, true);
+    if (!is_array($verification) || ($verification['success'] ?? false) !== true) {
+        return false;
+    }
+    if (($verification['action'] ?? '') !== 'contact') {
+        return false;
+    }
+    return hash_equals($turnstileExpectedHostname, strtolower((string)($verification['hostname'] ?? '')));
+};
+
 if (empty($_SESSION['vox_csrf'])) {
     $_SESSION['vox_csrf'] = bin2hex(random_bytes(32));
 }
@@ -228,6 +300,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isContactRoute && isset($_POST['vo
         }
         if (time() - $lastContactRequest < 45) {
             $errors[] = 'Yeni bir mesaj göndermeden önce lütfen kısa bir süre bekleyin.';
+        }
+        if ($turnstileEnabled && !$validateTurnstile((string)($_POST['cf-turnstile-response'] ?? ''))) {
+            $errors[] = 'Güvenlik doğrulaması tamamlanamadı. Lütfen tekrar deneyin.';
         }
 
         $name = preg_replace('/[\r\n]+/', ' ', $contactValues['name']);

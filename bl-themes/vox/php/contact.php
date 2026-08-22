@@ -55,9 +55,14 @@
                 <label>Telefon Numaranız<input type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder="05XX XXX XX XX" value="<?php echo htmlspecialchars($contactValues['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></label>
                 <label class="full">E-posta Adresiniz<input type="email" name="email" autocomplete="email" maxlength="160" placeholder="ornek@eposta.com" value="<?php echo htmlspecialchars($contactValues['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></label>
                 <label class="full">Mesajınız<textarea name="message" rows="5" minlength="10" maxlength="3000" placeholder="Mesajınızı yazın" required><?php echo htmlspecialchars($contactValues['message'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea></label>
+                <?php if ($turnstileEnabled): ?>
+                <div class="full contact-turnstile"><div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($turnstileSiteKey, ENT_QUOTES, 'UTF-8'); ?>" data-action="contact" data-theme="light"></div></div>
+                <?php endif; ?>
                 <label class="full consent"><input type="checkbox" name="consent" value="1" required><span>Kişisel verilerimin mesajımın değerlendirilmesi ve tarafıma dönüş yapılması amacıyla işlenmesini kabul ediyorum.</span></label>
             </div>
             <button class="button contact-form-submit" type="submit">Mesaj Gönder <b class="arrow">→</b></button>
         </form>
     </div>
 </section>
+
+<?php if ($turnstileEnabled): ?><script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script><?php endif; ?>
