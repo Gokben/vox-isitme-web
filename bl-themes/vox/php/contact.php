@@ -43,17 +43,22 @@
         <div>
             <span class="kicker">Bize yazın</span>
             <h2>İletişim formu</h2>
-            <p>Form altyapısı hazırlanıyor. Şimdilik telefon veya e-posta yoluyla bize ulaşabilirsiniz.</p>
-            <span class="contact-form-badge">Yakında aktif</span>
+            <p>Sorularınızı ve taleplerinizi form üzerinden iletin. Ekibimiz en kısa sürede sizinle iletişime geçsin.</p>
+            <span class="contact-form-badge is-active">Form aktif</span>
         </div>
-        <form class="contact-form" aria-disabled="true">
+        <form class="contact-form" method="post" action="<?php echo htmlspecialchars($contactUrl, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="vox_contact" value="1">
+            <input type="hidden" name="csrf" value="<?php echo htmlspecialchars((string)$_SESSION['vox_csrf'], ENT_QUOTES, 'UTF-8'); ?>">
+            <label class="honeypot" aria-hidden="true">Web sitesi<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            <?php if ($contactState['message'] !== ''): ?><div class="form-status <?php echo htmlspecialchars($contactState['type'], ENT_QUOTES, 'UTF-8'); ?>" role="status"><?php echo htmlspecialchars($contactState['message'], ENT_QUOTES, 'UTF-8'); ?></div><?php endif; ?>
             <div class="contact-form-grid">
-                <label>Adınız Soyadınız<input type="text" placeholder="Adınız ve soyadınız" disabled></label>
-                <label>Telefon Numaranız<input type="tel" placeholder="05__ ___ __ __" disabled></label>
-                <label class="full">E-posta Adresiniz<input type="email" placeholder="ornek@eposta.com" disabled></label>
-                <label class="full">Mesajınız<textarea rows="5" placeholder="Mesajınızı yazın" disabled></textarea></label>
+                <label>Adınız Soyadınız<input type="text" name="name" autocomplete="name" maxlength="100" placeholder="Adınız ve soyadınız" value="<?php echo htmlspecialchars($contactValues['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></label>
+                <label>Telefon Numaranız<input type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" placeholder="05XX XXX XX XX" value="<?php echo htmlspecialchars($contactValues['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></label>
+                <label class="full">E-posta Adresiniz<input type="email" name="email" autocomplete="email" maxlength="160" placeholder="ornek@eposta.com" value="<?php echo htmlspecialchars($contactValues['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required></label>
+                <label class="full">Mesajınız<textarea name="message" rows="5" minlength="10" maxlength="3000" placeholder="Mesajınızı yazın" required><?php echo htmlspecialchars($contactValues['message'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea></label>
+                <label class="full consent"><input type="checkbox" name="consent" value="1" required><span>Kişisel verilerimin mesajımın değerlendirilmesi ve tarafıma dönüş yapılması amacıyla işlenmesini kabul ediyorum.</span></label>
             </div>
-            <button class="button contact-form-submit" type="button" disabled>Mesaj Gönder <b class="arrow">→</b></button>
+            <button class="button contact-form-submit" type="submit">Mesaj Gönder <b class="arrow">→</b></button>
         </form>
     </div>
 </section>

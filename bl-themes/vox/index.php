@@ -195,9 +195,106 @@ $voxAboutValue = static function (string $key, string $fallback) use ($voxAboutC
 };
 $appointmentState = ['type' => '', 'message' => ''];
 $appointmentValues = [];
+$contactState = ['type' => '', 'message' => ''];
+$contactValues = [];
 
 if (empty($_SESSION['vox_csrf'])) {
     $_SESSION['vox_csrf'] = bin2hex(random_bytes(32));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isContactRoute && isset($_POST['vox_contact'])) {
+    foreach (array('name', 'phone', 'email', 'message') as $contactField) {
+        $contactValues[$contactField] = trim(strip_tags((string)($_POST[$contactField] ?? '')));
+    }
+
+    $token = (string)($_POST['csrf'] ?? '');
+    $honeypot = (string)($_POST['website'] ?? '');
+    $lastContactRequest = (int)($_SESSION['vox_last_contact_request'] ?? 0);
+    $errors = [];
+
+    if ($honeypot !== '') {
+        $contactState = ['type' => 'success', 'message' => 'Mesajınız başarıyla gönderildi.'];
+    } else {
+        if (!hash_equals((string)$_SESSION['vox_csrf'], $token)) {
+            $errors[] = 'Oturum doğrulanamadı. Sayfayı yenileyip tekrar deneyin.';
+        }
+        if (time() - $lastContactRequest < 45) {
+            $errors[] = 'Yeni bir mesaj göndermeden önce lütfen kısa bir süre bekleyin.';
+        }
+
+        $name = preg_replace('/[\r\n]+/', ' ', $contactValues['name']);
+        $phone = $contactValues['phone'];
+        $email = $contactValues['email'];
+        $message = $contactValues['message'];
+
+        if (mb_strlen($name) < 3 || mb_strlen($name) > 100) {
+            $errors[] = 'Lütfen geçerli bir ad ve soyad girin.';
+        }
+        if (!preg_match('/^[0-9+()\s-]{10,24}$/', $phone)) {
+            $errors[] = 'Lütfen geçerli bir telefon numarası girin.';
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $email)) {
+            $errors[] = 'Lütfen geçerli bir e-posta adresi girin.';
+        }
+        if (mb_strlen($message) < 10 || mb_strlen($message) > 3000) {
+            $errors[] = 'Mesajınız 10–3000 karakter arasında olmalıdır.';
+        }
+        if (!isset($_POST['consent'])) {
+            $errors[] = 'Mesajınızın değerlendirilmesi için kişisel veri onayını işaretleyin.';
+        }
+
+        if ($errors === []) {
+            $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Istanbul'));
+            $record = [
+                'id' => bin2hex(random_bytes(8)),
+                'createdAt' => $now->format(DATE_ATOM),
+                'name' => $name,
+                'phone' => $phone,
+                'email' => $email,
+                'message' => $message,
+            ];
+            $storageDirectory = PATH_WORKSPACES . 'vox-contact' . DS;
+            if (!is_dir($storageDirectory)) {
+                @mkdir($storageDirectory, 0750, true);
+            }
+            $saved = @file_put_contents(
+                $storageDirectory . 'messages.jsonl',
+                json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL,
+                FILE_APPEND | LOCK_EX
+            );
+
+            if ($saved === false) {
+                $contactState = ['type' => 'error', 'message' => 'Mesajınız kaydedilemedi. Lütfen bizi telefonla arayın.'];
+            } else {
+                $mailSubject = 'Vox web sitesi iletişim formu - ' . $name;
+                $encodedSubject = '=?UTF-8?B?' . base64_encode($mailSubject) . '?=';
+                $mailBody = "Yeni iletişim formu mesajı\n\n"
+                    . "Tarih: " . $now->format('d.m.Y H:i') . "\n"
+                    . "Ad Soyad: " . $name . "\n"
+                    . "Telefon: " . $phone . "\n"
+                    . "E-posta: " . $email . "\n\n"
+                    . "Mesaj:\n" . $message . "\n";
+                $mailHeaders = implode("\r\n", [
+                    'MIME-Version: 1.0',
+                    'Content-Type: text/plain; charset=UTF-8',
+                    'From: Vox Web <no-reply@voxisitme.com>',
+                    'Reply-To: ' . $email,
+                    'X-Mailer: PHP/' . phpversion(),
+                ]);
+                @mail('bilgi@voxisitme.com', $encodedSubject, $mailBody, $mailHeaders);
+
+                $_SESSION['vox_last_contact_request'] = time();
+                $_SESSION['vox_csrf'] = bin2hex(random_bytes(32));
+                $contactValues = [];
+                $contactState = [
+                    'type' => 'success',
+                    'message' => 'Mesajınız başarıyla gönderildi. Ekibimiz en kısa sürede sizinle iletişime geçecek.',
+                ];
+            }
+        } else {
+            $contactState = ['type' => 'error', 'message' => implode(' ', $errors)];
+        }
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vox_appointment'])) {
