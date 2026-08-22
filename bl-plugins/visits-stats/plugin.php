@@ -52,6 +52,7 @@ class pluginVisitsStats extends Plugin
 		$currentDate = Date::current('Y-m-d');
 		$isNewDay = !file_exists($this->workspace() . $currentDate . '.log');
 		$visitorAdded = $this->addVisitor();
+		$this->addTurkeyCityVisitor($currentDate);
 		if ($isNewDay && $visitorAdded) {
 			$this->deleteOldLogs();
 		}
@@ -151,6 +152,43 @@ class pluginVisitsStats extends Plugin
 		return $result;
 	}
 
+	// Returns unique Turkish visitors grouped by city for the requested period.
+	// Geo records intentionally contain a one-way visitor key, never a raw IP.
+	public function getTurkeyCityData($days = 30)
+	{
+		$cities = array();
+		$seen = array();
+		for ($i = 0; $i < $days; $i++) {
+			$date = Date::currentOffset('Y-m-d', '-' . $i . ' day');
+			$file = $this->workspace() . 'geo-' . $date . '.log';
+			if (!file_exists($file)) {
+				continue;
+			}
+
+			$handle = @fopen($file, 'rb');
+			if ($handle === false) {
+				continue;
+			}
+			while (($line = fgets($handle)) !== false) {
+				$record = json_decode($line, true);
+				if (!is_array($record) || empty($record['visitor']) || empty($record['city'])) {
+					continue;
+				}
+				$visitor = $record['visitor'];
+				if (isset($seen[$visitor])) {
+					continue;
+				}
+				$seen[$visitor] = true;
+				$city = $record['city'];
+				$cities[$city] = isset($cities[$city]) ? $cities[$city] + 1 : 1;
+			}
+			@fclose($handle);
+		}
+
+		arsort($cities, SORT_NUMERIC);
+		return array_slice($cities, 0, 12, true);
+	}
+
 	// Add a line to the current day log file
 	public function addVisitor()
 	{
@@ -167,5 +205,79 @@ class pluginVisitsStats extends Plugin
 		$logFile     = $this->workspace() . $currentDate . '.log';
 
 		return file_put_contents($logFile, $line . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
+	}
+
+	private function addTurkeyCityVisitor($date)
+	{
+		global $security;
+		$ip = $security->getUserIp();
+		if (!$this->isPublicIp($ip)) {
+			return false;
+		}
+
+		$visitor = hash('sha256', $ip . '|visits-stats-geo-v1');
+		$location = $this->lookupLocation($ip, $visitor);
+		if (empty($location) || $location['country'] !== 'TR' || empty($location['city'])) {
+			return false;
+		}
+
+		$file = $this->workspace() . 'geo-' . $date . '.log';
+		if (file_exists($file)) {
+			$lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			if (is_array($lines)) {
+				foreach ($lines as $line) {
+					$record = json_decode($line, true);
+					if (is_array($record) && isset($record['visitor']) && hash_equals($record['visitor'], $visitor)) {
+						return false;
+					}
+				}
+			}
+		}
+
+		$record = json_encode(array('visitor' => $visitor, 'city' => $location['city'], 'time' => Date::current('Y-m-d H:i:s')));
+		return file_put_contents($file, $record . PHP_EOL, FILE_APPEND | LOCK_EX) !== false;
+	}
+
+	private function isPublicIp($ip)
+	{
+		return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+	}
+
+	private function lookupLocation($ip, $visitor)
+	{
+		$cacheFile = $this->workspace() . 'geo-cache.json';
+		$cache = array();
+		if (file_exists($cacheFile)) {
+			$cache = json_decode(@file_get_contents($cacheFile), true);
+			if (!is_array($cache)) {
+				$cache = array();
+			}
+		}
+		if (isset($cache[$visitor])) {
+			return $cache[$visitor];
+		}
+
+		$url = 'https://ipwho.is/' . rawurlencode($ip) . '?fields=success,country_code,city';
+		$response = false;
+		if (function_exists('curl_init')) {
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+			curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+			$response = curl_exec($curl);
+			curl_close($curl);
+		} elseif (ini_get('allow_url_fopen')) {
+			$response = @file_get_contents($url, false, stream_context_create(array('http' => array('timeout' => 2))));
+		}
+
+		$data = json_decode($response, true);
+		if (!is_array($data) || empty($data['success']) || empty($data['country_code'])) {
+			return null;
+		}
+		$city = isset($data['city']) ? trim(strip_tags($data['city'])) : '';
+		$location = array('country' => strtoupper($data['country_code']), 'city' => $city);
+		$cache[$visitor] = $location;
+		file_put_contents($cacheFile, json_encode($cache), LOCK_EX);
+		return $location;
 	}
 }
